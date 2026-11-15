@@ -61,10 +61,6 @@ npm run payments:listen   # second terminal, when using Stripe: forwards Stripe 
 
 The deck is at http://localhost:3600/deck/.
 
-## What came before the hackathon
-
-The first commit is the Teezy marketplace as it stood on Nov 13, 2026: listings, orders and Stripe payments. Everything after it was built during AI@USC (Nov 14–15): the AI scam check, the AI broker and holds, the AI transfer check, the DPS-tactic rules, the vision-build AI, the hosting switches and the pitch deck. See `git log` for the split.
-
 ## Hosting (Railway)
 
 See `DEPLOY.md`. For the hackathon link, two extra variables:
