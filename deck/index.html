@@ -814,6 +814,13 @@
         p[i] = p[i + 1] = p[i + 2] = 0; p[i + 3] = Math.round(a * 255);
       }
       x.putImageData(d, 0, 0);
+      // Ticket detail on the T's top bar (it spans x 204-826, y 200-368 at this size):
+      // a half-circle notch bitten into the right end, and a perforated tear line before it, like a ticket stub.
+      x.globalCompositeOperation = 'destination-out';
+      var cy = 284, notch = 40, k;
+      x.beginPath(); x.arc(826, cy, notch, 0, Math.PI * 2); x.fill();
+      for (k = 0; k < 6; k++){ x.beginPath(); x.arc(732, 214 + k * 28, 8.5, 0, Math.PI * 2); x.fill(); }
+      x.globalCompositeOperation = 'source-over';
       intro.style.setProperty('--logo-mask', 'url(' + c.toDataURL('image/png') + ')');
     };
     img.src = 'shots/logo.png';
