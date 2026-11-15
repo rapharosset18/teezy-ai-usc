@@ -67,6 +67,8 @@ export function buildApp({ logger = false, stripe } = {}) {
   });
 
   app.register(fastifyStatic, { root: WEB_DIR, allowedPath: (file) => !config.isProduction || !file.includes('transfer-test') });
+  // The pitch deck, served next to the app so its live phones work on the hosted link: /deck/
+  app.register(fastifyStatic, { root: path.join(WEB_DIR, '..', 'deck'), prefix: '/deck/', decorateReply: false });
 
   app.addHook('preHandler', async (req) => {
     if (req.url.startsWith('/api/')) req.caller = await resolveUser(req);

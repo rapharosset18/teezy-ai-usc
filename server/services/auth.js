@@ -36,6 +36,7 @@ export async function startEmailLogin(rawEmail) {
      VALUES ($1, $2, clock_timestamp() + $3 * interval '1 millisecond')`,
     [email, codeHash(email, code), config.loginCodeTtlMs],
   );
+  if (config.demoSignIn) return { email, devCode: code };
   await sendEmail({
     to: email,
     subject: `Your Teezy code: ${code}`,

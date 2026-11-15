@@ -31,6 +31,8 @@ export const config = {
   pushProvider: env.PUSH_PROVIDER || 'dev',    // 'dev' (in-app banner over SSE) or 'expo'
 
   // Email sign-in
+  // Hackathon hosting: show the sign-in code on screen instead of emailing it, so judges can sign in without a mail service.
+  demoSignIn: env.DEMO_SIGN_IN === 'true',
   emailProvider: env.EMAIL_PROVIDER || 'dev',  // 'dev' (code printed to the server log) or 'resend'
   emailFrom: env.EMAIL_FROM || 'Teezy <login@example.com>',
   resendApiKey: env.RESEND_API_KEY,

@@ -560,7 +560,7 @@
   var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var params = new URLSearchParams(location.search);
   // The live phones load the app from here. Pass ?app=https://your-hosted-app to point them elsewhere.
-  var APP = (params.get('app') || 'http://localhost:3600').replace(/\/$/, '');
+  var APP = (params.get('app') || (location.port === '3700' || location.protocol === 'file:' ? 'http://localhost:3600' : location.origin)).replace(/\/$/, '');
   var cur = 0, step = 0, busy = false, scale = 1;
   var done = function(a){ return a ? a.finished.catch(function(){}) : Promise.resolve(); };
 
