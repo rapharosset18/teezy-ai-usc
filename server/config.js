@@ -6,7 +6,7 @@ function num(name, fallback) {
 }
 
 export const config = {
-  port: num('PORT', 3000),
+  port: num('PORT', 3600),
   databaseUrl: env.DATABASE_URL || 'postgres://teezy:teezy@localhost:54329/teezy',
   isProduction: env.NODE_ENV === 'production',
   paymentProvider: env.PAYMENT_PROVIDER || 'demo',
@@ -14,7 +14,7 @@ export const config = {
   stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET || '',
   stripeConnectWebhookSecret: env.STRIPE_CONNECT_WEBHOOK_SECRET || '', // Stripe gives connected-account events their own endpoint and secret
   allowLivePayments: env.ALLOW_LIVE_PAYMENTS === 'true',
-  publicUrl: env.PUBLIC_URL || 'http://localhost:3000',
+  publicUrl: env.PUBLIC_URL || 'http://localhost:3600',
   payoutDelayHours: num('PAYOUT_DELAY_HOURS', 24),
   alertWebhookUrl: env.ALERT_WEBHOOK_URL || '', // optional Slack-compatible webhook for failures
   autoConfirmHours: num('AUTO_CONFIRM_HOURS', 24), // hours after event start before an unreported delivery counts as received

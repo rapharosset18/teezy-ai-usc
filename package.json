@@ -1,5 +1,5 @@
 {
-  "name": "teezy",
+  "name": "tz-trojans",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,14 +9,13 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env server/scripts/dev.js",
     "start": "node server/scripts/start.js",
-    "design": "node server/scripts/design.js",
-    "sync:web": "node prototype/sync-web.js",
     "payments:listen": "node --env-file=.env server/scripts/payments-listen.js",
     "payments:report": "node --env-file-if-exists=.env server/scripts/payments-report.js",
     "migrate": "node server/scripts/migrate.js",
     "test": "node server/test/run.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "1.8.0",
     "@fastify/static": "10.1.7",
     "fastify": "5.12.7",
     "pg": "8.23.1",
@@ -26,5 +25,6 @@
   "devDependencies": {
     "@stripe/cli": "1.55.8",
     "embedded-postgres": "17.10.0-beta.17"
-  }
+  },
+  "description": "TZ for Trojans: protected student ticket resale with an AI scam check, AI broker and AI-checked transfers (AI@USC hackathon build, based on Teezy)."
 }

@@ -13,12 +13,13 @@ const USERS = [
   ['past-seller', 'Past seller', 4.8], ['past-buyer', 'Past buyer', 4.8],
 ];
 
+// Face values (last column, cents) are placeholders: confirm with the USC ticket office.
 const EVENTS = [
-  ['fb-asu', 'USC vs Arizona State', 'Coliseum', '2026-11-14T19:30:00-08:00'],
-  ['fb-nd', 'USC vs Oregon', 'Coliseum', '2026-11-21T17:00:00-08:00'],
-  ['fb-osu', 'USC vs Ohio State', 'Coliseum', '2026-11-28T12:30:00-08:00'],
-  ['sigchi-formal', 'Sigma Chi Formal', 'Off-campus venue', '2026-11-08T21:00:00-08:00'],
-  ['aka-social', 'AKA Fall Social', 'Off-campus venue', '2026-10-31T21:00:00-07:00'],
+  ['fb-asu', 'USC vs Arizona State', 'Coliseum', '2026-11-14T19:30:00-08:00', 8000],
+  ['fb-nd', 'USC vs Oregon', 'Coliseum', '2026-11-21T17:00:00-08:00', 8000],
+  ['fb-osu', 'USC vs Ohio State', 'Coliseum', '2026-11-28T12:30:00-08:00', 8000],
+  ['org-showcase', 'Cardinal Dance Co. Fall Showcase', 'Bovard Auditorium', '2026-11-20T19:00:00-08:00', 1500],
+  ['org-winterfest', 'Winter Fest on Trousdale', 'Trousdale Parkway', '2026-12-04T18:00:00-08:00', 1000],
 ];
 
 // [seller, event, tier, section, seat label, price per ticket ($), qty, listed minutes ago]
@@ -29,18 +30,18 @@ const LISTINGS = [
   ['riley', 'fb-nd', 'student', '25', 'Sec 25 · Row 12 · 2 seats', 38, 2, 45],
   ['chris', 'fb-nd', 'student', '27', 'Sec 27 · Row 40 · Seat 8', 48, 1, 600],
   ['ana', 'fb-nd', 'reserved', '115', 'Sec 115 · Row 3 · 4 seats', 80, 4, 900],
-  ['grant', 'sigchi-formal', 'entry', null, 'Sigma Chi Formal · wristband ×1', 40, 1, 400],
-  ['noah', 'sigchi-formal', 'entry', null, 'Sigma Chi Formal · wristband ×2', 35, 2, 200],
-  ['lena', 'aka-social', 'entry', null, 'AKA Fall Social · wristband ×2', 30, 2, 500],
-  ['bella', 'aka-social', 'entry', null, 'AKA Fall Social · wristband ×1', 28, 1, 90],
+  ['grant', 'org-showcase', 'ga', null, 'Fall Showcase · GA ×1', 15, 1, 400],
+  ['noah', 'org-showcase', 'ga', null, 'Fall Showcase · GA ×2', 12, 2, 200],
+  ['lena', 'org-winterfest', 'ga', null, 'Winter Fest · entry ×2', 10, 2, 500],
+  ['bella', 'org-winterfest', 'ga', null, 'Winter Fest · entry ×1', 8, 1, 90],
 ];
 
 // [event, tier, price per ticket ($), days ago]
 const PAST_SALES = [
   ['fb-nd', 'ga', 55, 2], ['fb-nd', 'ga', 58, 3], ['fb-nd', 'ga', 60, 5], ['fb-nd', 'ga', 62, 6], ['fb-nd', 'ga', 65, 9], ['fb-nd', 'ga', 70, 12],
   ['fb-nd', 'student', 42, 1], ['fb-nd', 'student', 45, 4], ['fb-nd', 'student', 48, 7], ['fb-nd', 'student', 50, 8], ['fb-nd', 'student', 52, 15],
-  ['fb-nd', 'reserved', 78, 3], ['fb-nd', 'reserved', 85, 10], ['fb-nd', 'reserved', 90, 20],
-  ['aka-social', 'entry', 32, 2],
+  ['fb-nd', 'reserved', 74, 3], ['fb-nd', 'reserved', 78, 10], ['fb-nd', 'reserved', 80, 20],
+  ['org-winterfest', 'ga', 10, 2],
 ];
 
 export const DEMO_TABLES = [
@@ -63,8 +64,8 @@ export async function seedDemoData({ listings = true } = {}) {
     for (const [id, name, rating] of USERS) {
       await client.query('INSERT INTO users (id, display_name, rating) VALUES ($1, $2, $3)', [id, name, rating]);
     }
-    for (const [id, name, venue, startsAt] of EVENTS) {
-      await client.query('INSERT INTO events (id, name, venue, starts_at) VALUES ($1, $2, $3, $4)', [id, name, venue, startsAt]);
+    for (const [id, name, venue, startsAt, faceValueCents] of EVENTS) {
+      await client.query('INSERT INTO events (id, name, venue, starts_at, face_value_cents) VALUES ($1, $2, $3, $4, $5)', [id, name, venue, startsAt, faceValueCents]);
     }
     for (const [seller, event, tier, section, seat, price, qty, ago] of listings ? LISTINGS : []) {
       await client.query(

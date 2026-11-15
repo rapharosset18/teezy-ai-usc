@@ -4,6 +4,14 @@ import { badRequest, conflict, notFound, forbidden, requireInt } from '../errors
 import { paymentRuntime } from './stripe.js';
 import { alertTrigger } from '../engine/rules.js';
 
+// TZ for Trojans: student resale is capped at face value.
+export async function checkFaceValue(eventId, cents, what = 'price') {
+  const { rows: [e] } = await query('SELECT face_value_cents FROM events WHERE id = $1', [eventId]);
+  if (e?.face_value_cents && cents > e.face_value_cents) {
+    throw badRequest(`TZ caps student resale at the $${e.face_value_cents / 100} face value; lower your ${what}`);
+  }
+}
+
 function listingDto(r) {
   return {
     id: r.id,
@@ -17,6 +25,7 @@ function listingDto(r) {
     qtyTotal: r.qty_total,
     qtyAvailable: r.qty_available,
     acceptsOffers: r.accepts_offers,
+    scamRisk: r.scam_risk,
     status: r.status,
     priorityTimestamp: r.priority_timestamp,
   };
@@ -35,6 +44,9 @@ export async function createListing(sellerId, input) {
   if (!input.tier) throw badRequest('tier is required');
   const priceCents = requireInt(input.priceCents, 'priceCents', { min: 1 });
   const qty = requireInt(input.qty ?? 1, 'qty', { min: 1, max: 20 });
+  await checkFaceValue(input.eventId, priceCents);
+  // Private floor: never returned by listingDto, read only by the broker.
+  const floorCents = input.floorCents == null ? null : Math.min(priceCents, requireInt(input.floorCents, 'floorCents', { min: 1 }));
   if (paymentRuntime().stripePayments) {
     const { rows: [account] } = await query('SELECT transfers_enabled FROM seller_accounts WHERE user_id = $1', [sellerId]);
     if (!account?.transfers_enabled) throw conflict('seller_not_ready', 'connect seller payouts before listing tickets');
@@ -42,10 +54,12 @@ export async function createListing(sellerId, input) {
   return withTransaction(async (client) => {
     const { rows: [row] } = await client.query(
       `INSERT INTO listings (event_id, seller_id, tier, section, seat_label, description,
-                             price_cents, qty_total, qty_available, accepts_offers)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8, $9) RETURNING *`,
+                             price_cents, qty_total, qty_available, accepts_offers, floor_cents, source_text, scam_risk)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8, $9, $10, $11, $12) RETURNING *`,
       [input.eventId, sellerId, input.tier, input.section ?? null, input.seatLabel ?? null,
-        input.description ?? null, priceCents, qty, input.acceptsOffers ?? true],
+        input.description ?? null, priceCents, qty, input.acceptsOffers ?? true, floorCents,
+        input.sourceText ? String(input.sourceText).slice(0, 1000) : null,
+        ['low', 'medium', 'high'].includes(input.scamRisk) ? input.scamRisk : null],
     );
     await afterWrite(client, null, row);
     return listingDto(row);
@@ -72,6 +86,7 @@ export async function updateListing(listingId, sellerId, patch) {
     for (const [key, column] of Object.entries(EDITABLE)) {
       if (patch[key] === undefined) continue;
       const value = key === 'priceCents' ? requireInt(patch[key], 'priceCents', { min: 1 }) : patch[key];
+      if (key === 'priceCents') await checkFaceValue(before.event_id, value);
       values.push(value);
       sets.push(`${column} = $${values.length}`);
     }

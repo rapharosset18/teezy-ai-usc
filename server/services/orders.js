@@ -163,6 +163,7 @@ export async function loadOrder(db, orderId) {
       problemReportedAt: f.problem_reported_at,
       problemReason: f.problem_reason,
       hasProof: f.has_proof,
+      aiCheck: f.ai_check,
     })),
   };
 }

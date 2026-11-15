@@ -73,7 +73,7 @@ window.installTeezyBackend = function (ui) {
     var d = new Date(e.startsAt), reference = originalEvents.find(function (old) { return old.name === e.name; }) || {};
     var prices = catalog.filter(function (l) { return l.eventId === e.id; }).map(function (l) { return l.priceCents / 100; });
     EV[e.id] = Object.assign({}, reference, { name: e.name, short: e.name.replace(' vs ', '\nvs '),
-      venue: e.venue || 'Venue to be announced', cat: /USC vs|volleyball|basketball/i.test(e.name) ? 'Sports' : 'Parties',
+      venue: e.venue || 'Venue to be announced', cat: /USC vs|volleyball|basketball/i.test(e.name) ? 'Sports' : 'Campus',
       startsAt: e.startsAt, past: d < new Date(), day: d.getDate(), dow: d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
       date: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
       time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),

@@ -4,6 +4,7 @@ import { config } from '../config.js';
 import { query, withTransaction } from '../db.js';
 import { badRequest, notFound, requireInt } from '../errors.js';
 import { notificationDto, sendPush } from './push.js';
+import { checkFaceValue } from './listings.js';
 
 function dto(r) {
   return {
@@ -40,10 +41,11 @@ export async function createDesired(userId, input) {
   const qty = requireInt(input.qty ?? 1, 'qty', { min: 1, max: 10 });
   const maxPriceCents = requireInt(input.maxPriceCents, 'maxPriceCents', { min: 1 });
   const tier = input.tier && input.tier !== 'any' ? input.tier : null;
+  await checkFaceValue(input.eventId, maxPriceCents, 'max price');
   const { rows: [row] } = await query(
-    `INSERT INTO desired_tickets (user_id, event_id, tier, qty, max_price_cents)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [userId, input.eventId, tier, qty, maxPriceCents],
+    `INSERT INTO desired_tickets (user_id, event_id, tier, qty, max_price_cents, source_text)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    [userId, input.eventId, tier, qty, maxPriceCents, input.sourceText ? String(input.sourceText).slice(0, 1000) : null],
   );
   return { ...dto(row), availableNow: await availableNow(row) };
 }

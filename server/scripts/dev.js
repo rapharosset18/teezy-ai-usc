@@ -3,8 +3,9 @@
 //   npm run dev -- --reset  reseeds the demo data
 import { config } from '../config.js';
 import { startEmbeddedPg } from '../embeddedPg.js';
+const num = (v, d) => (v ? Number(v) : d);
 
-const pg = process.env.DATABASE_URL ? null : await startEmbeddedPg({ dir: '.pgdata', port: 54329 });
+const pg = process.env.DATABASE_URL ? null : await startEmbeddedPg({ dir: '.pgdata', port: num(process.env.PG_PORT, 54339) });
 if (pg) config.databaseUrl = pg.url;
 
 const { query, closePool } = await import('../db.js');

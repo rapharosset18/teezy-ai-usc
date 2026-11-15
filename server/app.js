@@ -18,9 +18,9 @@ import { registerPushToken, listNotifications } from './services/push.js';
 import { simulateMarketMove } from './services/devSim.js';
 import { startEmailLogin, verifyEmailLogin, userIdForSession, endSession } from './services/auth.js';
 import { getEvent, listListings, getListing, listOrders } from './services/marketplace.js';
+import { registerAiRoutes } from './aiRoutes.js';
 
 const WEB_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'web');
-const DESIGN_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'design-reference');
 export const DEMO_USER = 'mia';
 const SESSION_COOKIE = 'teezy_session';
 
@@ -67,10 +67,6 @@ export function buildApp({ logger = false, stripe } = {}) {
   });
 
   app.register(fastifyStatic, { root: WEB_DIR, allowedPath: (file) => !config.isProduction || !file.includes('transfer-test') });
-  if (!config.isProduction) {
-    // The redesign mocks, rendered as a gallery (design-reference/index.html).
-    app.register(fastifyStatic, { root: DESIGN_DIR, prefix: '/design/', decorateReply: false });
-  }
 
   app.addHook('preHandler', async (req) => {
     if (req.url.startsWith('/api/')) req.caller = await resolveUser(req);
@@ -226,6 +222,9 @@ export function buildApp({ logger = false, stripe } = {}) {
     await deleteDesired(userId(req), req.params.id);
     return reply.code(204).send();
   });
+
+  /* ---------- AI@USC: paste-your-post, broker, AI transfer checks ---------- */
+  registerAiRoutes(app, userId);
 
   /* ---------- notifications ---------- */
   app.post('/api/push-tokens', async (req, reply) => {
