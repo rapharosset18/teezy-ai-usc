@@ -75,4 +75,4 @@ claude, anthropic-api, node.js, fastify, postgresql, stripe, stripe-connect, jav
 
 ## Team
 
-[names]
+Raphael Rosset, Lorenzo Giberti
