@@ -39,7 +39,7 @@ export async function getEvent(id) {
   return { id: event.id, name: event.name, venue: event.venue, startsAt: event.starts_at, tiers: event.tiers };
 }
 
-export async function listListings(input = {}, sellerId = null) {
+export async function listListings(input = {}, sellerId = null, viewerId = null) {
   const { limit, offset } = pagination(input);
   const params = [];
   const where = [];
@@ -55,6 +55,8 @@ export async function listListings(input = {}, sellerId = null) {
     }
   } else {
     where.push("l.status = 'active'", 'l.qty_available > 0', 'e.starts_at > now()');
+    if (viewerId) filter('(l.reserved_for IS NULL OR l.reserved_until <= now() OR l.reserved_for = ?)', viewerId);
+    else where.push('(l.reserved_for IS NULL OR l.reserved_until <= now())');
   }
   if (input.eventId) filter('l.event_id = ?', input.eventId);
   if (input.tier && input.tier !== 'any') filter('l.tier = ?', input.tier);
@@ -82,7 +84,8 @@ export async function listListings(input = {}, sellerId = null) {
 export async function getListing(id, userId = null) {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) throw badRequest('invalid listing id');
   const { rows: [row] } = await query(`${LISTING_SELECT} WHERE l.id = $1`, [id]);
-  if (!row || (row.seller_id !== userId && (row.status !== 'active' || row.qty_available < 1 || new Date(row.starts_at) <= new Date()))) {
+  const heldForOther = row && row.reserved_for && row.reserved_for !== userId && row.seller_id !== userId && new Date(row.reserved_until) > new Date();
+  if (!row || heldForOther || (row.seller_id !== userId && (row.status !== 'active' || row.qty_available < 1 || new Date(row.starts_at) <= new Date()))) {
     throw notFound('listing');
   }
   return listingDto(row);

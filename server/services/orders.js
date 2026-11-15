@@ -19,6 +19,7 @@ const ELIGIBLE = `
     AND EXISTS (SELECT 1 FROM events e WHERE e.id = l.event_id AND e.starts_at > now())
     AND ($2::text IS NULL OR l.tier = $2)
     AND l.seller_id <> $3            -- never match a buyer against their own listing
+    AND (l.reserved_for IS NULL OR l.reserved_until <= now() OR l.reserved_for = $3) -- broker holds
     AND l.price_cents <= $4
     AND l.qty_available >= $5`;
 
@@ -96,8 +97,15 @@ export async function buyAtPrice(input) {
 // Takes the seats out of the book and opens escrow, all in the matching transaction.
 async function openOrder(client, order, fills) {
   for (const f of fills) {
-    await client.query('UPDATE listings SET qty_available = qty_available - $2 WHERE id = $1', [f.listing.id, f.qty]);
+    // A broker hold ends once the buyer it was held for buys; the rest of the listing goes back on sale.
+    await client.query(`UPDATE listings SET qty_available = qty_available - $2,
+      reserved_for = CASE WHEN reserved_for = $3 THEN NULL ELSE reserved_for END,
+      reserved_until = CASE WHEN reserved_for = $3 THEN NULL ELSE reserved_until END
+      WHERE id = $1`, [f.listing.id, f.qty, order.buyerId]);
   }
+  // The buyer's open "looking for" requests for this event are done once they buy.
+  await client.query(`UPDATE desired_tickets SET paused = true, updated_at = clock_timestamp()
+    WHERE user_id = $1 AND event_id = $2 AND NOT paused AND qty <= $3`, [order.buyerId, order.eventId, order.qty]);
   const totals = orderTotals(fills, config.buyerFeeRate);
   const { rows: [row] } = await client.query(
     `INSERT INTO orders (buyer_id, event_id, tier, qty, max_price_cents, allow_split,

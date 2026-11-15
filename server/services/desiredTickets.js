@@ -25,7 +25,8 @@ async function availableNow(entry) {
   const { rows: [r] } = await query(
     `SELECT count(*)::int AS n FROM listings
      WHERE event_id = $1 AND status = 'active' AND ($2::text IS NULL OR tier = $2)
-       AND seller_id <> $3 AND price_cents <= $4 AND qty_available >= $5`,
+       AND seller_id <> $3 AND price_cents <= $4 AND qty_available >= $5
+       AND (reserved_for IS NULL OR reserved_until <= now() OR reserved_for = $3)`,
     [entry.event_id, entry.tier, entry.user_id, entry.max_price_cents, entry.qty],
   );
   return r.n;
@@ -90,7 +91,8 @@ export async function checkDesiredForListing({ listingId, trigger }) {
        AND (d.tier IS NULL OR d.tier = l.tier)
        AND l.price_cents <= d.max_price_cents
        AND l.qty_available >= d.qty
-       AND d.user_id <> l.seller_id`,
+       AND d.user_id <> l.seller_id
+       AND (l.reserved_for IS NULL OR l.reserved_until <= now() OR l.reserved_for = d.user_id)`,
     [listingId],
   );
 

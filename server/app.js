@@ -146,7 +146,7 @@ export function buildApp({ logger = false, stripe } = {}) {
 
   /* ---------- events and the price slider ---------- */
   app.get('/api/events/:eventId', async (req) => getEvent(req.params.eventId));
-  app.get('/api/listings', async (req) => listListings(req.query));
+  app.get('/api/listings', async (req) => listListings(req.query, null, req.caller?.id ?? null));
   app.get('/api/listings/:id', async (req) => getListing(req.params.id, req.caller?.id));
   app.get('/api/me/listings', async (req) => listListings(req.query, userId(req)));
   app.get('/api/me/orders', async (req) => listOrders(userId(req), req.query));

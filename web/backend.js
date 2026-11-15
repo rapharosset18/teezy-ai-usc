@@ -58,7 +58,8 @@ window.installTeezyBackend = function (ui) {
   }
   function brokerDone(d) {
     var b = d.broker || {}, lines = {
-      matched: 'The broker matched you with a buyer at ' + money((b.priceCents || 0) / 100) + ', between your floor and their max. They’ve been alerted to pay.',
+      matched: d.listing ? 'The broker matched you with a buyer at ' + money((b.priceCents || 0) / 100) + ', between your floor and their max. It’s held for them until ' + b.heldUntil + '.'
+        : 'The broker found a seller whose private floor fits your max. Your price is ' + money((b.priceCents || 0) / 100) + ', held for you only until ' + b.heldUntil + '.',
       offer: 'Limits didn’t meet, so the broker sent a private offer at ' + money((b.priceCents || 0) / 100) + ' to you and the closest ' + (d.listing ? 'buyer' : 'seller') + '. Answer it in your inbox.',
       available: 'Tickets at or under your price are listed right now.',
       waiting: d.listing ? 'Your listing is live. The broker will tell you when a buyer gets close.' : 'Your request is live. The broker alerts you the moment a ticket fits.'
@@ -66,7 +67,7 @@ window.installTeezyBackend = function (ui) {
     var share = d.listing ? location.origin + '/?event=' + encodeURIComponent(d.listing.eventId) : '';
     return '<div class="tz-ok"><b>' + (d.listing ? 'Listed with protection' : 'Request saved') + '</b><br>' + esc(lines[b.outcome] || lines.waiting) + '</div>' +
       (share ? '<label class="stack" style="gap:6px">Post this back in the group chat<textarea class="field tz-share" readonly rows="3">' + esc('Selling on Teezy. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
-      (b.outcome === 'available' && d.desired ? button('See tickets', 'event', 'data-ev="' + esc(d.desired.eventId) + '"') : '') +
+      ((b.outcome === 'available' || b.outcome === 'matched') && d.desired ? button(b.outcome === 'matched' ? 'Buy it now' : 'See tickets', 'alertevent', 'data-ev="' + esc(d.desired.eventId) + '" data-qty="' + (d.desired.qty || 1) + '"') : '') +
       (b.outcome === 'offer' ? button('Open inbox', 'brokerinbox') : '') + button('Paste another post', 'brokeragain', '', true);
   }
   O.broker = function () {
@@ -87,7 +88,7 @@ window.installTeezyBackend = function (ui) {
   A.brokercopy = function () { var t = document.querySelector('.tz-share'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(function () { ui.toast('Copied. Paste it in the group chat.'); }, function () { t.select(); ui.toast('Select and copy the message'); }); };
   A.offeranswer = function (d) { return run(async function () {
     var o = await api('POST', '/api/broker/offers/' + d.id, { accept: d.yes === '1' }); await refresh();
-    ui.toast(o.status === 'accepted' ? 'Deal agreed at ' + money(o.priceCents / 100) + '. ' + (o.side === 'buy' ? 'Tap the alert to pay.' : 'The buyer is paying now.') : o.status === 'declined' ? 'Offer declined. Your listing stays as it was.' : 'Got it. Waiting on the other side.');
+    ui.toast(o.status === 'accepted' ? 'Deal agreed at ' + money(o.priceCents / 100) + '. ' + (o.side === 'buy' ? 'Held for you until ' + o.heldUntil + '. Tap the alert to pay.' : 'Held for the buyer until ' + o.heldUntil + '.') : o.status === 'declined' ? 'Offer declined. Your listing stays as it was.' : 'Got it. Waiting on the other side.');
   }); };
   function offerCard(o) {
     return '<div class="card tz-offer"><span class="lt">Teezy broker · ' + esc(o.eventName) + '</span>' + note(o.message) +

@@ -16,6 +16,15 @@ const NICKNAMES = {
   ucla: ['bruins'], 'notre dame': ['nd ', 'irish'],
 };
 
+export const HOLD_MINUTES = 30;
+
+async function holdFor(listingId, buyerId) {
+  const { rows: [r] } = await query(
+    `UPDATE listings SET reserved_for = $2, reserved_until = now() + make_interval(mins => $3) WHERE id = $1 RETURNING reserved_until`,
+    [listingId, buyerId, HOLD_MINUTES]);
+  return new Date(r.reserved_until).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' });
+}
+
 const dollars = (cents) => (cents == null ? null : cents / 100);
 const money = (cents) => '$' + (cents % 100 ? (cents / 100).toFixed(2) : String(cents / 100));
 
@@ -83,7 +92,7 @@ const PAIRS = `
 export async function brokerFor({ listingId = null, desiredId = null }) {
   const { rows } = await query(
     `SELECT l.id AS listing_id, l.seller_id, l.price_cents, COALESCE(l.floor_cents, l.price_cents) AS floor_cents,
-            d.id AS desired_id, d.user_id AS buyer_id, d.max_price_cents, e.id AS event_id, e.name AS event_name, e.face_value_cents
+            d.id AS desired_id, d.user_id AS buyer_id, d.max_price_cents, d.qty AS want_qty, e.id AS event_id, e.name AS event_name, e.face_value_cents
      ${PAIRS} AND ${listingId ? 'l.id = $1' : 'd.id = $1'}
      ORDER BY l.priority_timestamp, d.created_at`,
     [listingId || desiredId],
@@ -100,14 +109,19 @@ export async function brokerFor({ listingId = null, desiredId = null }) {
   if (overlap) {
     const cap = overlap.face_value_cents ?? Infinity;
     const price = Math.min(cap, overlap.max_price_cents, Math.max(overlap.floor_cents, Math.round((overlap.floor_cents + overlap.max_price_cents) / 200) * 100));
+    const until = await holdFor(overlap.listing_id, overlap.buyer_id);
     await updateListing(overlap.listing_id, overlap.seller_id, { priceCents: price });
     await withTransaction(async (client) => {
+      const b = await pushNote(client, overlap.buyer_id, `Broker deal: ${money(price)} for ${overlap.event_name}`,
+        `A seller's private floor was within your max. This ticket is held for you only until ${until}. Pay in Teezy; your money is held until it's in your account.`,
+        { listingId: overlap.listing_id, eventId: overlap.event_id, qty: overlap.want_qty, priceCents: price });
+      await sendPush(b);
       const n = await pushNote(client, overlap.seller_id, `Broker matched your ${overlap.event_name} ticket`,
-        `A buyer's max was within your private floor, so your listing is now ${money(price)}. Your money is held until they have the ticket.`,
+        `A buyer's max was within your private floor, so your listing is now ${money(price)}, held for them until ${until}. You're paid once they have the ticket.`,
         { listingId: overlap.listing_id, priceCents: price });
       await sendPush(n);
     });
-    return { outcome: 'matched', priceCents: price, eventName: overlap.event_name };
+    return { outcome: 'matched', priceCents: price, eventName: overlap.event_name, heldUntil: until };
   }
 
   // 2. No overlap: if the closest pair is near, propose one price to both, privately.
@@ -146,7 +160,7 @@ function offerDto(o, userId) {
     id: o.id, side, eventId: o.event_id, eventName: o.event_name, priceCents: o.price_cents,
     message: side === 'sell' ? o.seller_message : o.buyer_message,
     myAnswer: side === 'sell' ? o.seller_answer : o.buyer_answer,
-    status: o.status, createdAt: o.created_at,
+    status: o.status, heldUntil: o.heldUntil || null, createdAt: o.created_at,
   };
 }
 
@@ -180,7 +194,10 @@ export async function answerOffer(userId, offerId, accept) {
     // Both said yes: the buyer's max rises and the listing drops to the agreed price,
     // which fires the buyer's "your ticket hit your price" alert so they can pay.
     await updateDesired(o.buyer_id, o.desired_ticket_id, { maxPriceCents: o.price_cents });
+    const until = await holdFor(o.listing_id, o.buyer_id);
     await updateListing(o.listing_id, o.seller_id, { priceCents: o.price_cents });
+    await query(`UPDATE broker_offers SET status = 'closed', updated_at = clock_timestamp() WHERE listing_id = $1 AND status = 'open' AND id <> $2`, [o.listing_id, o.id]);
+    o.heldUntil = until;
   }
   return offerDto(o, userId);
 }
