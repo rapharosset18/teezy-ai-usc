@@ -3926,7 +3926,7 @@ document.addEventListener('keydown', function(e){
 });
 
 // Add ?demo to the address to see the full app with sample data instead of the live backend.
-if (window.installTeezyBackend && !/[?&]demo\b/.test(location.search)) window.installTeezyBackend({ S:S, EV:EV, V:V, O:O, A:A, UPCOMING:UPCOMING, FRIEND_PLANS:FRIEND_PLANS, TEAMS:TEAMS, esc:esc, money:money, render:render, cur:cur, sheet:sheet, tab:tab, toast:toast, I:I });
+if (window.installTeezyBackend) window.installTeezyBackend({ S:S, EV:EV, V:V, O:O, A:A, UPCOMING:UPCOMING, FRIEND_PLANS:FRIEND_PLANS, TEAMS:TEAMS, esc:esc, money:money, render:render, cur:cur, sheet:sheet, tab:tab, toast:toast, I:I }, { demo: /[?&]demo\b/.test(location.search) });
 render(true);
 // Opened from someone's friend code (camera scan of the QR link): send them a request.
 var addU = /[?&]add=([^&#]+)/.exec(location.search);

@@ -1,7 +1,9 @@
 /* Connect the Swoosh screens to the API without changing the prototype's styling. */
-window.installTeezyBackend = function (ui) {
+window.installTeezyBackend = function (ui, opts) {
   'use strict';
   var S = ui.S, EV = ui.EV, V = ui.V, O = ui.O, A = ui.A;
+  // Vision build (?demo): keep every designed screen with its sample data and add only the AI broker on top.
+  var demo = !!(opts && opts.demo), originals = { V: Object.assign({}, V), O: Object.assign({}, O), A: Object.assign({}, A) };
   var esc = ui.esc, money = ui.money, render = ui.render;
   var me = null, runtime = {}, loading = true, failure = '', busy = false, generation = 0;
   var orders = [], sales = [], notifications = [], desired = [], catalog = [];
@@ -136,13 +138,24 @@ window.installTeezyBackend = function (ui) {
 
   var originalHome = V.home, originalSearch = V.search, originalEvent = V.event, originalSeatsheet = O.seatsheet;
   var originalEvents = Object.values(EV).map(function (e) { return Object.assign({}, e); });
-  ['offers', 'tickets', 'selling', 'sales', 'requests', 'threads', 'activity', 'parking'].forEach(function (key) { S[key] = []; });
-  S.watch = {}; S.drops = {}; S.teams = {}; S.ready = 0; S.settings.payout = 'Not connected';
-  S.where.when = 'This month';
-  ui.UPCOMING.splice(0); ui.FRIEND_PLANS.splice(0);
-  Object.keys(ui.TEAMS).forEach(function (key) { delete ui.TEAMS[key]; });
+  if (!demo) {
+    // The working build starts empty and fills in from the server; the vision build keeps its sample data.
+    ['offers', 'tickets', 'selling', 'sales', 'requests', 'threads', 'activity', 'parking'].forEach(function (key) { S[key] = []; });
+    S.watch = {}; S.drops = {}; S.teams = {}; S.ready = 0; S.settings.payout = 'Not connected';
+    S.where.when = 'This month';
+    ui.UPCOMING.splice(0); ui.FRIEND_PLANS.splice(0);
+    Object.keys(ui.TEAMS).forEach(function (key) { delete ui.TEAMS[key]; });
+  }
 
+  // Stripe's checkout and onboarding pages refuse to load inside another page (the pitch deck shows the app in an iframe),
+  // so when embedded they open in a new tab instead.
+  function goStripe(url) {
+    var framed = false; try { framed = window.top !== window.self; } catch (e) { framed = true; }
+    if (framed) { var w = window.open(url, '_blank'); if (w) { try { w.opener = null; } catch (e) {} ui.toast('Stripe opened in a new tab'); } else window.top.location.href = url; }
+    else window.location.assign(url);
+  }
   async function api(method, path, body) {
+    if (demo) return demoApi(path, body || {});
     var response;
     try {
       response = await fetch(path, { method: method, credentials: 'same-origin',
@@ -207,6 +220,7 @@ window.installTeezyBackend = function (ui) {
       dist: reference.dist || 0, color: reference.color || '#2F4A3C', range: prices.length ? [Math.min.apply(null, prices), Math.max.apply(null, prices)] : [10, 100] });
   }
   async function refresh() {
+    if (demo) return;
     var current = ++generation;
     var profile = await api('GET', '/api/me').catch(function (err) { if (err.status === 401) return null; throw err; });
     var user = profile && profile.signedIn ? profile : null;
@@ -500,13 +514,13 @@ window.installTeezyBackend = function (ui) {
   A.resumepay = function (d) { var order = orders.find(function (o) { return o.id === d.id; }); ui.sheet({ k: 'checkout', order: order }); };
   A.pay = function () { var order = S.overlay.order; return run(async function () {
     if (runtime.stripePayments && !demoOrder(order)) {
-      var result = await api('POST', '/api/orders/' + order.id + '/checkout'); window.location.assign(result.url); return;
+      var result = await api('POST', '/api/orders/' + order.id + '/checkout'); goStripe(result.url); return;
     }
     await api('POST', '/api/orders/' + order.id + '/pay'); await refresh(); S.overlay = { k: 'order', id: order.id }; ui.toast('Test payment saved. Waiting for the seller to transfer.');
   }); };
   A.payouts = function () { if (signedIn()) ui.sheet({ k: 'payouts' }); };
-  A.onboard = function () { return run(async function () { var result = await api('POST', '/api/me/seller-onboarding'); window.location.assign(result.url); }); };
-  A.stripedashboard = function () { return run(async function () { var result = await api('POST', '/api/me/seller-dashboard'); window.location.assign(result.url); }); };
+  A.onboard = function () { return run(async function () { var result = await api('POST', '/api/me/seller-onboarding'); goStripe(result.url); }); };
+  A.stripedashboard = function () { return run(async function () { var result = await api('POST', '/api/me/seller-dashboard'); goStripe(result.url); }); };
   A.refund = function (d) { return run(async function () { await api('POST', '/api/orders/' + d.id + '/refund'); await refresh(); ui.sheet({ k: 'order', id: d.id }); ui.toast('Refund requested. Its status is saved with your payment.'); }); };
   A.order = function (d) { ui.sheet({ k: 'order', id: d.id }); };
   A.showticket = function (d) { var t = S.tickets.find(function (x) { return x.id === d.id; }); if (t) ui.sheet({ k: 'order', id: t.orderId }); };
@@ -573,6 +587,48 @@ window.installTeezyBackend = function (ui) {
       }
     });
   });
+  /* ---------- vision build: the broker on sample data ---------- */
+  // Reading the post is real (the same AI and scam rules as the working build). Listing and matching are
+  // simulated against made-up buyers and sellers, because the vision build has no accounts or database.
+  function demoEvents() {
+    return ui.UPCOMING.filter(function (id) { return EV[id] && !EV[id].past; }).map(function (id) {
+      var e = EV[id], opp = e.name.toLowerCase().replace(/^usc vs\.? /, '');
+      var keys = [opp].concat({ 'notre dame': ['nd', 'irish'], 'ucla': ['bruins'], 'ohio state': ['osu', 'buckeyes'], 'arizona state': ['asu', 'sun devils'], 'oregon': ['ducks'] }[opp] || []);
+      return { id: id, name: e.name, date: e.date, faceValue: (e.range && e.range[1]) || 80, keywords: keys };
+    });
+  }
+  function holdTime() { return new Date(Date.now() + 30 * 60000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+  async function demoApi(path, body) {
+    if (path === '/api/ai/read-post') {
+      var res = await fetch('/api/demo/read-post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: body.text, events: demoEvents() }) });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.message || 'The broker could not read that. Try again.');
+      return data;
+    }
+    var face = (demoEvents().find(function (e) { return e.id === body.eventId; }) || { faceValue: 80 }).faceValue * 100;
+    if (path === '/api/ai/listing') {
+      var ask = Math.min(body.priceCents || face, face), floor = Math.min(body.floorCents || ask, ask);
+      var buyerMax = floor + Math.round((ask - floor) * 0.55);          // a sample buyer whose private max sits between your floor and your ask
+      var price = Math.min(face, Math.round((floor + buyerMax) / 200) * 100);
+      return { listing: { eventId: body.eventId, qty: body.qty }, broker: { outcome: 'matched', priceCents: price, heldUntil: holdTime() } };
+    }
+    if (path === '/api/ai/request') {
+      var max = Math.min(body.maxPriceCents || face, face), sellerFloor = Math.round(max * 0.86);  // a sample seller who would take a bit less
+      return { desired: { eventId: body.eventId, qty: body.qty }, broker: { outcome: 'matched', priceCents: Math.round((sellerFloor + max) / 200) * 100, heldUntil: holdTime() } };
+    }
+    throw new Error('That isn’t part of the vision build.');
+  }
+  if (demo) {
+    // Put every designed screen back, keeping only the broker pieces added above.
+    var keepA = { broker: 1, close: 1 };
+    Object.keys(originals.V).forEach(function (k) { V[k] = originals.V[k]; });
+    Object.keys(originals.O).forEach(function (k) { O[k] = originals.O[k]; });
+    Object.keys(originals.A).forEach(function (k) { if (!keepA[k]) A[k] = originals.A[k]; });
+    me = { id: 'demo', name: 'Raphael' }; loading = false;
+    V.home = function () { return originalHome().replace(/(data-act="where"[^>]*>[\s\S]*?<\/button>)<\/div>/, '$1' + teezyLogo() + '</div>'); };
+    render();
+    return;
+  }
   Object.keys(V).forEach(function (name) {
     var view = V[name]; V[name] = function (params) {
       if (loading) return shell('Teezy', note('Loading your marketplace…'));

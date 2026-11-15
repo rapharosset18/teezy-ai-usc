@@ -144,8 +144,8 @@ function mergeRules(result, rules, source) {
 
 function offlineReadPost(text, events, rules) {
   const t = text.toLowerCase();
-  const received = /\b(saw (?:ur|your)|(?:zelle|venmo|cash ?app|pay) me|dm me|i(?:'ll| will) (?:send|transfer)|ill (?:send|transfer)|you can have)\b/.test(t);
-  const intent = received ? (/\b(i have|got|selling|have \d)\b/.test(t) ? 'buy' : 'sell')
+  const received = /\b(saw (?:ur|your)|(?:zelle|venmo|cash ?app|pay) me|dm me|i(?:'ll| will) (?:send|transfer)|ill (?:send|transfer)|you can have|didn'?t go through|send (?:it )?again)\b/.test(t);
+  const intent = received ? (/\b(i have|got|selling|have \d|send (?:it )?again|pay again|didn'?t go through|(?:zelle|venmo|cash ?app|pay) me)\b/.test(t) ? 'buy' : 'sell')
     : /\b(iso|looking for|need|buying|want to buy|wtb)\b/.test(t) ? 'buy'
     : /\b(selling|sell|wts|have \d|for sale)\b/.test(t) ? 'sell' : 'unclear';
   const prices = findPrices(text).filter((p) => !rules.event || p !== rules.event.faceValue || findPrices(text).length === 1);

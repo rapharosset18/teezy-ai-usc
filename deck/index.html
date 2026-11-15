@@ -193,9 +193,10 @@
   /* 11 comparison */
   .cmphead{ display:flex; justify-content:space-between; align-items:flex-end; gap:30px; }
   .cmphead h2{ font-size:40px; white-space:nowrap; }
-  .cmplede{ width:300px; flex:none; font-size:17px; line-height:1.4; color:var(--soft); font-weight:600; padding-bottom:4px; }
+  .cmplede{ width:330px; flex:none; font-size:15.5px; line-height:1.4; color:var(--soft); font-weight:600; padding-bottom:4px; }
+  .cmplede b{ color:var(--cardinal); }
   .cmx{ position:relative; margin-top:22px; display:grid; gap:0; }
-  .cr{ display:grid; grid-template-columns:236px 128px repeat(6, 1fr); align-items:center; border-bottom:1.5px solid var(--line); min-height:52px; position:relative; z-index:1; }
+  .cr{ display:grid; grid-template-columns:236px 128px repeat(6, 1fr); align-items:center; border-bottom:1.5px solid var(--line); min-height:47px; position:relative; z-index:1; }
   .cr.hd{ border-bottom:2px solid var(--ink); min-height:56px; }
   .cr .lab{ font-size:15.5px; font-weight:800; line-height:1.2; padding-right:10px; }
   .cr .lab small{ display:block; font-size:12.5px; font-weight:600; color:var(--faint); margin-top:2px; }
@@ -215,8 +216,8 @@
   .tzname i{ display:inline-block; width:.3em; height:.3em; border-radius:2px; background:var(--gold); margin-left:2px; }
   /* the highlighted Teezy column sits behind its cells */
   .tzglow{ position:absolute; top:-10px; bottom:-10px; left:236px; width:128px; border-radius:18px; background:var(--cardinal); box-shadow:0 22px 40px -18px rgba(153,0,0,.7); z-index:0; }
-  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+8) .c.tz .y{ box-shadow:0 0 0 4px rgba(255,204,0,.6); }
-  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+8){ background:linear-gradient(90deg, rgba(255,204,0,.16), rgba(255,204,0,0) 80%); }
+  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+9) .c.tz .y{ box-shadow:0 0 0 4px rgba(255,204,0,.6); }
+  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+9){ background:linear-gradient(90deg, rgba(255,204,0,.16), rgba(255,204,0,0) 80%); }
   .cmpnote{ font-size:12.5px; color:var(--faint); margin-top:20px; }
 
   /* 12 rollout */
@@ -451,7 +452,7 @@
         <h2 style="font-size:40px">Two builds. Both running now.</h2>
         <div class="vlist">
           <div data-auto><b>Working build:</b> real accounts and listings, the AI scam check and broker, Stripe escrow, AI transfer check.</div>
-          <div data-auto><b>Vision build:</b> where Teezy goes next, with sample data. Offers and counteroffers, a watchlist, plans with friends, event albums.</div>
+          <div data-auto><b>Vision build:</b> where Teezy goes next, with sample data. The same AI broker and scam check, plus offers and counteroffers, a watchlist, plans with friends, event albums.</div>
         </div>
         <p class="modeline" style="margin:0">Tap inside a phone to use it. Click outside it to get the arrow keys back.</p>
       </div>
@@ -488,10 +489,10 @@
   </section>
 
   <!-- 11 -->
-  <section class="slide s-cmp" data-in="flip" data-hook="cmp" data-notes="Here's how we compare. Big marketplaces like StubHub, Ticketmaster, Gametime and USC's own partner SeatGeek protect buyers with a guarantee, but anyone can sell, and prices aren't capped. Student Seats is closest: verified students and escrow. [click] But only Teezy uses AI: it checks the group-chat messages where scams actually start, brokers a fair price without anyone revealing their limit, and checks the transfer before the seller is paid.">
+  <section class="slide s-cmp" data-in="flip" data-hook="cmp" data-notes="Here's how we compare. Teezy is the only protected app where you can negotiate, because we wanted every student to feel they got a fair price. Big marketplaces like StubHub, Ticketmaster, Gametime and USC's own partner SeatGeek protect buyers with a guarantee, but anyone can sell, and prices aren't capped. Student Seats is closest: verified students and escrow. [click] And only Teezy uses AI: it checks the group-chat messages where scams actually start, brokers a fair price without anyone revealing their limit, and checks the transfer before the seller is paid.">
     <div class="cmphead">
       <div><p class="kicker">Comparative analysis · Impact</p><h2>Only Teezy puts AI where scams start.</h2></div>
-      <p class="cmplede">Guarantees refund you <i>after</i> something goes wrong. Teezy stops it before you pay.</p>
+      <p class="cmplede"><b>The only protected app where you can negotiate</b>, so buyers and sellers both know the price is fair. And guarantees refund you <i>after</i> a scam; Teezy stops it before you pay.</p>
     </div>
     <div class="cmx" data-cmx>
       <div class="tzglow" aria-hidden="true"></div>
@@ -499,6 +500,7 @@
       <div class="cr" data-auto><div class="lab">Verified students only<small>no strangers or fake profiles</small></div><div class="c tz"><span class="y">✓</span><em>USC email</em></div><div class="c"><span class="y">✓</span><em>school email</em></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Money held until the ticket arrives<small>seller isn't paid first</small></div><div class="c tz"><span class="y">✓</span><em>Stripe escrow</em></div><div class="c"><span class="y">✓</span><em>Trustap escrow</em></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Price capped at face value<small>no price-gouging</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">Negotiate the price<small>offers, counters, a fair middle</small></div><div class="c tz"><span class="y">✓</span><em>offers + AI broker</em></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="m">Haggle, no protection</span></div></div>
       <div class="cr" data-auto><div class="lab">AI scam check on chats and DMs<small>flags DPS scam tactics</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Private AI broker<small>fair price, limits stay secret</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">AI checks the transfer<small>screenshot matched to the order</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
@@ -778,7 +780,7 @@
       // the AI rows light up on the click: they are what only Teezy does
       step: function(s, n, animate){
         s.classList.toggle('lit', n >= 1);
-        if (n >= 1 && animate && !calm) [].slice.call(s.querySelectorAll('.cr')).slice(4, 7).forEach(function(r, i){
+        if (n >= 1 && animate && !calm) [].slice.call(s.querySelectorAll('.cr')).slice(4, 8).forEach(function(r, i){
           r.querySelector('.c.tz').animate([{ transform:'scale(1)' }, { transform:'scale(1.25)', offset:.4 }, { transform:'scale(1)' }], { duration:BEAT * 5, delay:i * BEAT * 1.5, easing:OUT });
         });
       },
