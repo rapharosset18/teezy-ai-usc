@@ -5,7 +5,7 @@ Devpost wants a walkthrough of the user workflow **and** the live prototype, so 
 
 ## Before you hit record
 
-- [ ] Anthropic credits added, so the scam check says **"Read by Claude"** (not "Offline rules")
+- [ ] Anthropic credits added, so the listing check says **"Read by Claude"** (not "Offline rules")
 - [ ] Running: the app (`localhost:3600`), the deck (`localhost:3700`), and Stripe's webhook forwarder
 - [ ] Stripe sandbox renamed to "Teezy" (so checkout doesn't say "Teazy sandbox")
 - [ ] Grant has Ohio State tickets at $45 (the only seller who can be paid)
@@ -31,12 +31,12 @@ Test card: `4242 4242 4242 4242`, any future date, any CVC, ZIP `90007`. Untick 
 **Screen:** slide 4, then click once for the "AI proposes, code decides" line.
 **Say:** "So we built Teezy, a USC-only ticket exchange. The AI reads how students actually talk. Code makes every decision about money."
 
-### 0:45–1:15 · Live demo 1: the scam check — the app
-**Screen:** switch to the app (or slide 9's working-build phone). Tap the **teezy AI** button; the broker sheet grows out of it. Tap the **"Payment failed"** sample, then **Read my post**.
-**Say:** "Here's a DM straight out of that DPS email: 'the Zelle didn't go through, send it again, and send a pic of your USC ID.' I paste it into Teezy, and Claude flags all four scam tactics, quotes the exact words, and explains each one. It tells me not to pay this person, and offers the same ticket with my money protected."
+### 0:45–1:15 · Live demo 1: post in one sentence, checked by AI
+**Screen:** the app. Tap the **teezy AI** button; the sheet grows out of it. Tap **Sell a ticket** → **Fill it in with AI** → the listing fills in with a private lowest price and "Checked by AI. Ready to go live." Then **Start another** → **Blocked listing** → **Fill it in with AI** → "This can't go live yet."
+**Say:** "On Teezy you post a ticket the way you'd text a friend. Claude fills in the game, the price, and the lowest price I'd take, which stays private. Then it checks the listing before it goes live. If someone tries to sneak in 'Venmo me first' or a phone number, it can't go live. And there's no chat with strangers on Teezy, so there's nowhere for a scammer to pull you off the app."
 
 ### 1:15–1:50 · Live demo 2: the private broker
-**Screen:** **Paste another post** → type or paste *"ISO 1 Ohio State ticket, can do 45 max"* → **Read my post** → **Find me a ticket**. Show "Your price is $__, held for you only until …". Then cut to slide 6 and click through: seller $40, buyer $45, the $43 deal drops in.
+**Screen:** **Start another** → type *"Looking for 1 Ohio State ticket, can do 45 max"* → **Fill it in with AI** → **Find me a ticket**. Show "Your price is $__, held for you only until …". Then cut to slide 6 and click through: seller $40, buyer $45, the $43 deal drops in.
 **Say:** "Now the part that wasn't possible before. In a group chat, nobody says their real number. On Teezy, I tell the broker my real max, and it stays private. A seller told it the lowest they'd take. The AI reads both, and code finds the overlap: a fair price in the middle, capped at face value, held for me for thirty minutes. Neither of us ever saw the other's number."
 
 ### 1:50–2:25 · Live demo 3: escrow on Stripe
@@ -45,7 +45,7 @@ Test card: `4242 4242 4242 4242`, any future date, any CVC, ZIP `90007`. Untick 
 
 ### 2:25–2:40 · Why us, and the vision build — slides 11 and 9
 **Screen:** slide 11, the comparison table; click to light up the AI rows. Then slide 9, tap around the vision-build phone for two seconds.
-**Say:** "StubHub, Ticketmaster and Gametime refund you after something goes wrong. Teezy stops it before you pay, and it's the only protected app where students can negotiate. And here's where it's going next: offers, a watchlist, and planning with friends."
+**Say:** "StubHub, Ticketmaster and Gametime refund you after something goes wrong. Teezy is safe by design, with AI checking every listing and transfer, and it's the only protected app where students can negotiate. And here's where it's going next: offers, a watchlist, and planning with friends."
 
 ### 2:40–2:52 · The ask — slides 12 and 13
 **Screen:** slide 12 (rollout), then slide 13.
@@ -57,5 +57,5 @@ Test card: `4242 4242 4242 4242`, any future date, any CVC, ZIP `90007`. Untick 
 
 - If you run long, cut the vision-build line in 2:25–2:40 first, then shorten demo 2's slide clicks.
 - Speed up the Stripe form-filling 2× in the edit; keep the "paid, held" moment at normal speed.
-- Add captions for the key moments: "4 scam tactics flagged", "limits stay private", "money held on Stripe".
+- Add captions for the key moments: "listing blocked: outside payment", "limits stay private", "money held on Stripe".
 - Export at 1080p. Upload to YouTube (unlisted is fine) or Vimeo and paste the link into Devpost.

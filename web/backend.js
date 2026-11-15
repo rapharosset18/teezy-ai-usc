@@ -12,20 +12,22 @@ window.installTeezyBackend = function (ui, opts) {
   /* ---------- AI@USC: Teezy broker (paste your post), offers, AI transfer check ---------- */
   var broker = { text: '', result: null, done: null }, brokerOffers = [], aiStatus = {};
   var SAMPLES = [
-    ['Seller post', 'Selling my Ohio State student ticket, want 70, would take 55 if it goes today'],
-    ['Buyer ISO', 'ISO 1 Ohio State ticket, can do 60 max, need it by Friday'],
-    ['Scam DM', 'hey saw ur ISO. got 2 ohio state tix $40 each, zelle me first and ill transfer right after. need them gone asap'],
-    ['“Payment failed”', 'hmm the zelle didnt go through on my end, can u send it again? also send a pic of ur usc id so i know ur legit, ill send my usc id too']
+    ['Sell a ticket', 'Selling my Ohio State student ticket, want 70, would take 55 if it goes today'],
+    ['Find a ticket', 'Looking for 1 Ohio State ticket, can do 60 max, need it by Friday'],
+    ['Blocked listing', 'Selling 2 OSU student tix $60 each, venmo me first @tickets_usc or text 213-555-0199']
   ];
   var SIGNAL_NAMES = { off_platform_payment: 'Payment outside Teezy', payment_before_transfer: 'Pay before transfer', urgency_pressure: 'Pressure to hurry',
     price_too_good: 'Price too good to be true', above_face_value: 'Above face value', suspicious_link: 'Link in the message',
-    personal_info_request: 'Asks for login, codes or your ID', impersonation: 'Fake USC proof', payment_trick: '“Payment failed” trick', other: 'Other warning sign' };
+    personal_info_request: 'Asks for login, codes or your ID', impersonation: 'Fake USC proof', payment_trick: '“Payment failed” trick', contact_info: 'Contact details', other: 'Other warning sign' };
   function brokerCard() {
     return (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
   }
+  // A listing can't go live with these: on Teezy there's no chat with strangers, so payment and contact stay inside the app.
+  var BLOCKING = ['off_platform_payment', 'payment_before_transfer', 'contact_info', 'suspicious_link', 'personal_info_request', 'payment_trick', 'impersonation'];
+  function blockers(r) { return r.messageKind !== 'received' && r.scamSignals.some(function (s) { return BLOCKING.indexOf(s.type) !== -1; }); }
   function signalList(r) {
-    if (!r.scamSignals.length) return '<div class="tz-ok"><b>No scam signs found.</b> Still, only ever pay inside Teezy: your money is held until the ticket is in your account.</div>';
-    return '<div class="tz-warn" role="alert"><b>' + (r.scamRisk === 'high' ? 'High scam risk' : 'Possible scam') + '</b><ul>' +
+    if (!r.scamSignals.length) return '<div class="tz-ok"><b>Checked by AI. Ready to go live.</b> No outside payment, no contact details, no price above face value. Your money and the ticket stay inside Teezy.</div>';
+    return '<div class="tz-warn" role="alert"><b>' + (blockers(r) ? 'This can’t go live yet' : r.scamRisk === 'high' ? 'High scam risk' : 'Check this first') + '</b><ul>' +
       r.scamSignals.map(function (s) { return '<li><span class="tz-chip">' + esc(SIGNAL_NAMES[s.type] || s.type) + '</span> “' + esc(s.quote) + '”<br><span>' + esc(s.why) + '</span></li>'; }).join('') +
       '</ul></div>';
   }
@@ -36,11 +38,15 @@ window.installTeezyBackend = function (ui, opts) {
     var sell = r.intent === 'sell', buy = r.intent === 'buy';
     var head = '<div class="between"><span class="lt">' + esc(r.summary || 'Here is what Teezy read') + '</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>';
     if (!sell && !buy) {
-      return head + signalList(r) + note(r.clarifyingQuestion || 'Teezy could not tell if this is a sale or a request. Add “selling” or “ISO” and try again.') +
-        (r.scamRisk !== 'low' ? note('If someone sent you this, don’t pay them. Find a protected ticket on Teezy instead.') : '') + button('Try another message', 'brokeragain', '', true);
+      return head + signalList(r) + note(r.clarifyingQuestion || 'Teezy couldn’t tell if you’re selling or looking for a ticket. Add “selling” or “looking for” and try again.') +
+        button('Edit and try again', 'brokeredit', '', true);
     }
     var received = r.messageKind === 'received';
     if (received) head = '<div class="between"><span class="lt">A message someone sent you</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>' + note(r.summary);
+    if (blockers(r)) {
+      return head + signalList(r) + '<div class="tz-warn"><b>Take these out and post again.</b> Buyers pay inside Teezy and the money is held until the ticket arrives, so nobody needs your number, your handle or another way to pay.</div>' +
+        button('Edit my post', 'brokeredit');
+    }
     var price = received ? '' : sell ? r.publicPrice : (r.privateLimit || r.publicPrice);
     var limit = sell ? (r.privateLimit || '') : '';
     return head + signalList(r) +
@@ -67,19 +73,19 @@ window.installTeezyBackend = function (ui, opts) {
     };
     var share = d.listing ? location.origin + '/?event=' + encodeURIComponent(d.listing.eventId) : '';
     return '<div class="tz-ok"><b>' + (d.listing ? 'Listed with protection' : 'Request saved') + '</b><br>' + esc(lines[b.outcome] || lines.waiting) + '</div>' +
-      (share ? '<label class="stack" style="gap:6px">Post this back in the group chat<textarea class="field tz-share" readonly rows="3">' + esc('Selling on Teezy. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
+      (share ? '<label class="stack" style="gap:6px">Share your listing<textarea class="field tz-share" readonly rows="3">' + esc('My ticket is on Teezy. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
       ((b.outcome === 'available' || b.outcome === 'matched') && d.desired ? button(b.outcome === 'matched' ? 'Buy it now' : 'See tickets', 'alertevent', 'data-ev="' + esc(d.desired.eventId) + '" data-qty="' + (d.desired.qty || 1) + '"') : '') +
-      (b.outcome === 'offer' ? button('Open inbox', 'brokerinbox') : '') + button('Paste another post', 'brokeragain', '', true);
+      (b.outcome === 'offer' ? button('Open inbox', 'brokerinbox') : '') + button('Start another', 'brokeragain', '', true);
   }
   O.broker = function () {
     var body;
     if (broker.done) body = brokerDone(broker.done);
     else if (broker.result) body = brokerResult(broker.result);
-    else body = note('Paste the message you’d post in the GroupMe, or a DM someone sent you. Teezy reads it, checks it for scams, and turns it into a protected trade.') +
+    else body = note('Say what you’re selling or looking for, the way you’d text a friend. Teezy’s AI fills in the listing, keeps your lowest price private, and checks it before it goes live.') +
       '<form data-backend="readpost" class="stack"><textarea class="field tz-paste" name="text" rows="4" maxlength="2000" placeholder="Selling my UCLA ticket, want 70, would take 55 if it goes today" required>' + esc(broker.text) + '</textarea>' +
       '<div class="tz-samples">' + SAMPLES.map(function (s, i) { return '<button type="button" class="chip" data-act="brokersample" data-i="' + i + '">' + esc(s[0]) + '</button>'; }).join('') + '</div>' +
-      '<p id="backend-error" class="sub" role="alert"></p>' + submit('Read my post') + '</form>' +
-      note('AI proposes, code decides: the AI reads your words, but prices, matches and payouts are set by fixed rules.');
+      '<p id="backend-error" class="sub" role="alert"></p>' + submit('Fill it in with AI') + '</form>' +
+      note('AI proposes, code decides: the AI reads your words; prices, matches and payouts are set by fixed rules.');
     return panel('Teezy broker', body);
   };
   // The broker sheet grows out of the Teezy logo and shrinks back into it when closed.
@@ -117,9 +123,10 @@ window.installTeezyBackend = function (ui, opts) {
       };
   };
   A.brokersample = function (d) { broker.text = SAMPLES[+d.i][1]; var t = document.querySelector('.tz-paste'); if (t) t.value = broker.text; else ui.sheet({ k: 'broker' }); };
+  A.brokeredit = function () { broker.result = null; broker.done = null; ui.sheet({ k: 'broker' }); };
   A.brokeragain = function () { broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
   A.brokerinbox = function () { S.overlay = null; ui.tab('inbox'); };
-  A.brokercopy = function () { var t = document.querySelector('.tz-share'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(function () { ui.toast('Copied. Paste it in the group chat.'); }, function () { t.select(); ui.toast('Select and copy the message'); }); };
+  A.brokercopy = function () { var t = document.querySelector('.tz-share'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(function () { ui.toast('Copied. Share it anywhere.'); }, function () { t.select(); ui.toast('Select and copy the message'); }); };
   A.offeranswer = function (d) { return run(async function () {
     var o = await api('POST', '/api/broker/offers/' + d.id, { accept: d.yes === '1' }); await refresh();
     ui.toast(o.status === 'accepted' ? 'Deal agreed at ' + money(o.priceCents / 100) + '. ' + (o.side === 'buy' ? 'Held for you until ' + o.heldUntil + '. Tap the alert to pay.' : 'Held for the buyer until ' + o.heldUntil + '.') : o.status === 'declined' ? 'Offer declined. Your listing stays as it was.' : 'Got it. Waiting on the other side.');

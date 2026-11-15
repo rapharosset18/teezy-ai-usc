@@ -9,13 +9,19 @@ const RULES = [
   // From the USC DPS advisory (Oct 28, 2026): fake "payment failed" claims, switched payment accounts, and ID photo requests.
   { type: 'payment_trick', risk: 'high', re: /\b((?:payment|zelle|venmo|cash ?app|it|transfer|money)\s+(?:didn'?t|did not|never|doesn'?t)\s+(?:go through|went through|come through|came through|work|show up|arrive)|(?:payment|transfer)\s+(?:failed|bounced|was unsuccessful)|(?:send|pay)\s+(?:it\s+)?again|send (?:it )?one more time|(?:use|send (?:it )?to)\s+(?:my\s+)?(?:other|new|friend'?s|roommate'?s|backup)\s+(?:account|venmo|zelle|cash ?app))/i, why: 'Claims a payment failed or asks you to pay a different account. USC DPS warns this is how GroupMe scammers take several payments. Teezy takes one payment and holds it.' },
   { type: 'personal_info_request', risk: 'high', re: /\b(password|passcode|log ?in (?:info|details)|usc ?net ?id|ssn|verification code|2fa|duo code|(?:pic|picture|photo|selfie|screenshot)\s+(?:of|with)\s+(?:your|ur|you'?re)\s+(?:usc\s+|student\s+)?id|send (?:me )?(?:your|ur) (?:usc |student )?id)\b/i, why: 'Asks for login details, codes or a photo of your USC ID. USC DPS warns scammers reuse ID photos to target other students. Teezy verifies students by USC email instead.' },
+  // There is no chat between strangers on Teezy, so a phone number, handle or "text me" in a listing is the only way
+  // to pull a buyer off the app. Listings can't carry contact details.
+  { type: 'contact_info', risk: 'high', re: /(\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b|(?:^|\s)@[a-z0-9_.]{3,}|\b(?:text|dm|call|message|snap|hmu)\s+me\b|\b(?:snapchat|insta(?:gram)?|whatsapp|telegram|groupme)\b|\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b)/i, why: 'Contact details in a listing. Teezy has no chat with strangers: buyers pay and get the ticket inside Teezy, so nobody needs your number or handle.' },
   { type: 'impersonation', risk: 'high', re: /\b(usc (?:ticket )?office|athletics department|official usc|usg official|here'?s my usc id|(?:i'?ll|let me) send (?:you )?my (?:usc |student )?id)\b/i, why: 'Claims to speak for USC or offers a USC ID as proof. USC DPS warns an ID photo does not prove who is selling. Teezy checks every seller\'s USC email.' },
 ];
 
 const PRICE_RE = /(?<![\/\d.:])\$?\b(\d{2,3})\b(?![\/:]|\s*(?:pm|am)\b)/gi;
 
+// Phone numbers and handles aren't prices.
+const NOT_PRICES = /\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b|@[\w.]+|\b\d{4}\b/g;
+
 export function prices(text) {
-  return [...text.matchAll(PRICE_RE)].map((m) => Number(m[1])).filter((n) => n >= 5 && n <= 500);
+  return [...text.replace(NOT_PRICES, ' ').matchAll(PRICE_RE)].map((m) => Number(m[1])).filter((n) => n >= 5 && n <= 500);
 }
 
 export function findEvent(text, events) {

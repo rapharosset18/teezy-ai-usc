@@ -1,8 +1,8 @@
-# Teezy: protected ticket trading for Trojans, with AI where scams start
+# Teezy: safe ticket trading for Trojans, checked by AI
 
 **AI@USC 2026 (HackSC × USC AI Committee) entry.**
 
-On Oct 28, 2026, USC's Department of Public Safety emailed every student about rising football-ticket fraud on GroupMe: sellers who take the money and never transfer, fake "your payment didn't go through" requests, and stolen USC ID photos. Teezy is a USC-only ticket exchange that stops those scams *before* a student pays.
+On Oct 28, 2026, USC's Department of Public Safety emailed every student about rising football-ticket fraud on GroupMe: sellers who take the money and never transfer, fake "your payment didn't go through" requests, and stolen USC ID photos. Teezy is a USC-only ticket exchange that is safe by design: every student is verified by USC email, there is no chat with strangers, the money is held on Stripe until the ticket arrives, and AI checks every listing and every transfer.
 
 - **Live prototype:** _add the hosted link here_
 - **Pitch deck:** `/deck/` on the hosted link, or `deck/teezy-deck-mock.pdf`
@@ -10,12 +10,12 @@ On Oct 28, 2026, USC's Department of Public Safety emailed every student about r
 
 ## What the AI does
 
-**AI proposes, code decides.** Claude reads messy group-chat language. Plain code makes every decision about price, matching and money.
+**AI proposes, code decides.** Claude reads how students actually talk. Plain code makes every decision about price, matching and money.
 
 | Feature | What happens |
 |---|---|
-| **AI scam check** | Paste a GroupMe post or a DM you received. Claude (with structured JSON output) flags the tactics from the DPS advisory and quotes the exact words: payment outside the app, "payment failed, send again", requests for your USC ID, fake USC proof, pressure to hurry, links, above-face-value prices. Fixed rules run on every message too, so known scams are caught even if the AI misses one or is offline. |
-| **Private AI broker** | Paste "selling osu 70, would take 40" or "ISO osu, 45 max". Claude turns it into an order, including the private limit. Code finds overlaps: if a seller's private floor is at or under a buyer's private max, it sets a fair price in the middle (capped at face value) and holds that ticket for that buyer only, for 30 minutes. If limits don't meet but are close, both sides get a private offer. Neither side ever sees the other's limit. |
+| **AI listing check** | Post a ticket in one sentence, the way you'd text a friend. Claude (with structured JSON output) fills in the game, quantity, price and your private lowest price, then checks the listing before it goes live. Listings with outside payment ("Venmo me first"), contact details (phone numbers, @handles, emails), links, requests for USC IDs or prices above face value can't go live. Fixed rules check every listing too, even if the AI is offline. |
+| **Private AI broker** | Post "selling osu 70, would take 40" or "looking for osu, 45 max". Claude turns it into an order, including the private limit. Code finds overlaps: if a seller's private floor is at or under a buyer's private max, it sets a fair price in the middle (capped at face value) and holds that ticket for that buyer only, for 30 minutes. If limits don't meet but are close, both sides get a private offer. Neither side ever sees the other's limit. |
 | **AI-checked transfer** | After the seller transfers in the official USC ticket app, the buyer uploads a screenshot. Claude's vision checks the game, the name and the number of tickets, and flags signs of editing. The buyer still decides; only they can confirm. |
 
 ## Escrow on Stripe
@@ -25,7 +25,7 @@ The buyer pays through **Stripe Checkout**. The money is held: the seller is pai
 ## Two builds
 
 - **Working build** (`/`): real accounts, listings, the AI scam check and broker, Stripe escrow, AI transfer check.
-- **Vision build** (`/?demo`): every planned feature with sample data (offers and counteroffers, a watchlist, plans with friends, event albums) plus the same AI scam check and a simulated broker.
+- **Vision build** (`/?demo`): every planned feature with sample data (offers and counteroffers, a watchlist, plans with friends, event albums) plus the same AI listing check and a simulated broker.
 
 ## Safety and privacy choices
 
@@ -33,6 +33,7 @@ The buyer pays through **Stripe Checkout**. The money is held: the seller is pai
 - Messages are treated as data. The AI has no power to change a price, match a trade or release money.
 - If the AI is unreachable, the fixed rules still check every post and trades still work.
 - Sign-in is by USC email; nobody is asked for an ID photo.
+- There is no chat between strangers, so there's nowhere to ask for payment outside Teezy.
 - Student resale is capped at face value.
 
 ## Tech stack
@@ -42,7 +43,7 @@ Node 22, Fastify, PostgreSQL (embedded locally), pg-boss jobs, server-sent event
 Key files:
 
 - `server/ai.js`: the Claude calls (read a post, check a transfer screenshot, broker messages) and their offline fallbacks
-- `server/rules.js`: the fixed scam rules
+- `server/rules.js`: the fixed listing-check rules
 - `server/services/broker.js`: matching, fair price, the 30-minute hold, private offers
 - `server/services/payments.js`: Stripe Checkout, webhooks, held funds, Connect transfers, refunds, disputes
 - `web/backend.js`: the app's broker screens and the API connection

@@ -347,12 +347,12 @@
   </section>
 
   <!-- 4 -->
-  <section class="slide" data-in="iris" data-from="gold" data-notes="Teezy does three things with AI. It reads any GroupMe post or DM and flags scams. It brokers deals privately, so buyers and sellers never reveal their limits. And it holds the money on Stripe until the ticket arrives. [click] The rule throughout: AI proposes, code decides.">
+  <section class="slide" data-in="iris" data-from="gold" data-notes="Teezy does four things with AI. You post a ticket the way you would text a friend, and the AI writes the listing. It checks every listing before it goes live. It brokers deals privately, so nobody reveals their limit. And it checks the transfer before Stripe pays the seller. There is no chat with strangers, so there is nowhere for a scammer to say Zelle me first. [click] The rule throughout: AI proposes, code decides.">
     <p class="kicker">The solution</p>
     <h2>Teezy: <span class="red">AI proposes,</span> code decides.</h2>
-    <p class="lede">Paste a post exactly as you'd write it in the group chat. Teezy turns it into a protected trade.</p>
+    <p class="lede">Post a ticket the way you'd text a friend. There's no chat with strangers: payment, transfer and every check happen inside Teezy.</p>
     <div class="pillars">
-      <div class="pillar" data-auto><div class="ic" style="background:var(--warn-wash);color:var(--warn-text)">!</div><h3>Scam check</h3><p>Reads any post or DM and flags the tactics DPS warned about, quoting the exact words.</p></div>
+      <div class="pillar" data-auto><div class="ic" style="background:var(--warn-wash);color:var(--warn-text)">!</div><h3>AI listing check</h3><p>Writes your listing from one sentence, then blocks outside payment, contact details and above-face-value prices before it goes live.</p></div>
       <div class="pillar" data-auto><div class="ic" style="background:var(--cardinal);color:#fff">AI</div><h3>Private broker</h3><p>Buyers and sellers tell Teezy their real limit. It finds the fair price without showing either side.</p></div>
       <div class="pillar" data-auto><div class="ic" style="background:var(--green-wash);color:var(--green-text)">✓</div><h3>Escrow on Stripe</h3><p>Your money is held until the ticket is in your account. AI checks the transfer screenshot first.</p></div>
     </div>
@@ -360,18 +360,18 @@
   </section>
 
   <!-- 5 -->
-  <section class="slide" data-in="scan" data-notes="Here's a DM straight out of the DPS email. [click] 'The Zelle didn't go through, send it again, and send a pic of your USC ID.' [click] Teezy flags four warning signs, quotes the exact words, and says why. [click] The warning arrives at the moment you're about to pay.">
+  <section class="slide" data-in="scan" data-notes="Posting is one sentence. [click] A seller types it the way they would text a friend. [click] The AI fills in the game, the price and their private lowest price, and checks it. [click] If someone tries to sneak in a Venmo handle or a phone number, the listing cannot go live. There is no chat with strangers, so a scammer has no way to pull you off Teezy.">
     <div class="demo">
-      <div class="phone" data-morph="phone"><img src="shots/scam.jpg" alt="Teezy scam check flags four warning signs"></div>
+      <div class="phone" data-morph="phone"><img src="shots/scam.jpg" alt="Teezy blocks a listing with a Venmo handle and a phone number"></div>
       <div class="copy">
-        <p class="kicker">Demo 1 · Scam check</p>
-        <h2>Paste the DM. See the scam before you pay.</h2>
+        <p class="kicker">Demo 1 · AI listing check</p>
+        <h2>Post in one sentence. AI checks it before it goes live.</h2>
         <ul class="steps">
-          <li data-build="1"><span class="k"><span class="pill warn">Paste</span></span><span>“the zelle didnt go through, can u send it again? also send a pic of ur usc id”</span></li>
-          <li data-build="2"><span class="k"><span class="pill ai">AI</span></span><span>Flags all four DPS tactics, quoting the exact words that triggered each one.</span></li>
-          <li data-build="2"><span class="k"><span class="pill code">Rules</span></span><span>Fixed rules check every message too, so known scams are caught even if the AI misses one.</span></li>
+          <li data-build="1"><span class="k"><span class="pill warn">Type</span></span><span>“Selling 2 OSU student tix $60 each, venmo me first @tickets_usc or text 213-555-0199”</span></li>
+          <li data-build="2"><span class="k"><span class="pill ai">AI</span></span><span>Fills in the game, the price and the private lowest price, and flags the outside payment and contact details, quoting the exact words.</span></li>
+          <li data-build="2"><span class="k"><span class="pill code">Rules</span></span><span>A listing with a payment handle, phone number or link can't go live. Fixed rules check too, even if the AI is offline.</span></li>
         </ul>
-        <div class="callout gold" data-build="3">Instead of a warning email after the fact, every student gets the warning at the moment they're about to pay.</div>
+        <div class="callout gold" data-build="3">There's no chat with strangers on Teezy, so there's nowhere to say “Zelle me first.” The only way to pay is inside Teezy, with the money held.</div>
       </div>
     </div>
   </section>
@@ -396,7 +396,7 @@
           <div class="deal" data-deal data-build="3" data-morph="money" style="left:32.9%"><div class="coin">$43 <small data-clock>held 30:00</small></div></div>
         </div>
         <ul class="steps" style="margin-top:30px">
-          <li data-build="3"><span class="k"><span class="pill ai">AI</span></span><span>Reads “would take 40” and “45 max” from messy group-chat language.</span></li>
+          <li data-build="3"><span class="k"><span class="pill ai">AI</span></span><span>Reads “would take 40” and “45 max” from how students actually talk.</span></li>
           <li data-build="3"><span class="k"><span class="pill code">Code</span></span><span>Splits the difference, caps at face value, and holds the ticket for that buyer only.</span></li>
         </ul>
       </div>
@@ -474,7 +474,7 @@
     <p class="kicker">How it works · Technical &amp; AI</p>
     <h2>The AI never touches the money.</h2>
     <div class="arch">
-      <div class="box in" data-auto><h4>Student message</h4><p>“selling osu 70, would take 40”, or a DM they received, or a transfer screenshot.</p></div>
+      <div class="box in" data-auto><h4>Student message</h4><p>“selling osu 70, would take 40”, or a transfer screenshot.</p></div>
       <div class="arrow" data-auto>→</div>
       <div class="box ai" data-auto><h4>Claude (Opus)</h4><ul><li>Reads it into a strict JSON order: event, quantity, price, private limit</li><li>Flags scam signals with the exact quote</li><li>Checks transfer screenshots with vision</li></ul></div>
       <div class="arrow" data-auto>→</div>
@@ -489,9 +489,9 @@
   </section>
 
   <!-- 11 -->
-  <section class="slide s-cmp" data-in="flip" data-hook="cmp" data-notes="Here's how we compare. Teezy is the only protected app where you can negotiate, because we wanted every student to feel they got a fair price. Big marketplaces like StubHub, Ticketmaster, Gametime and USC's own partner SeatGeek protect buyers with a guarantee, but anyone can sell, and prices aren't capped. Student Seats is closest: verified students and escrow. [click] And only Teezy uses AI: it checks the group-chat messages where scams actually start, brokers a fair price without anyone revealing their limit, and checks the transfer before the seller is paid.">
+  <section class="slide s-cmp" data-in="flip" data-hook="cmp" data-notes="Here's how we compare. Teezy is the only protected app where you can negotiate, because we wanted every student to feel they got a fair price. Big marketplaces like StubHub, Ticketmaster, Gametime and USC's own partner SeatGeek protect buyers with a guarantee, but anyone can sell, and prices aren't capped. Student Seats is closest: verified students and escrow. [click] And only Teezy uses AI: it checks every listing before it goes live, brokers a fair price without anyone revealing their limit, and checks the transfer before the seller is paid.">
     <div class="cmphead">
-      <div><p class="kicker">Comparative analysis · Impact</p><h2>Only Teezy puts AI where scams start.</h2></div>
+      <div><p class="kicker">Comparative analysis · Impact</p><h2>Only Teezy checks every trade with AI.</h2></div>
       <p class="cmplede"><b>The only protected app where you can negotiate</b>, so buyers and sellers both know the price is fair. And guarantees refund you <i>after</i> a scam; Teezy stops it before you pay.</p>
     </div>
     <div class="cmx" data-cmx>
@@ -501,7 +501,7 @@
       <div class="cr" data-auto><div class="lab">Money held until the ticket arrives<small>seller isn't paid first</small></div><div class="c tz"><span class="y">✓</span><em>Stripe escrow</em></div><div class="c"><span class="y">✓</span><em>Trustap escrow</em></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Price capped at face value<small>no price-gouging</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Negotiate the price<small>offers, counters, a fair middle</small></div><div class="c tz"><span class="y">✓</span><em>offers + AI broker</em></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="m">Haggle, no protection</span></div></div>
-      <div class="cr" data-auto><div class="lab">AI scam check on chats and DMs<small>flags DPS scam tactics</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">AI checks every listing<small>no outside payment or contact info</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Private AI broker<small>fair price, limits stay secret</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">AI checks the transfer<small>screenshot matched to the order</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
       <div class="cr" data-auto><div class="lab">Buyer fee<small>on top of the ticket</small></div><div class="c tz"><b class="fee">10%</b></div><div class="c"><span class="fee">Tiered</span></div><div class="c"><span class="fee">Varies</span></div><div class="c"><span class="fee">~10–35%*</span></div><div class="c"><span class="fee">Varies</span></div><div class="c"><span class="fee">~10–15%*</span></div><div class="c"><span class="fee">$0, no protection</span></div></div>
