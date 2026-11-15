@@ -12,11 +12,12 @@ window.installTeezyBackend = function (ui) {
   var SAMPLES = [
     ['Seller post', 'Selling my Ohio State student ticket, want 70, would take 55 if it goes today'],
     ['Buyer ISO', 'ISO 1 Ohio State ticket, can do 60 max, need it by Friday'],
-    ['Scam DM', 'hey saw ur ISO. got 2 ohio state tix $40 each, zelle me first and ill transfer right after. need them gone asap']
+    ['Scam DM', 'hey saw ur ISO. got 2 ohio state tix $40 each, zelle me first and ill transfer right after. need them gone asap'],
+    ['“Payment failed”', 'hmm the zelle didnt go through on my end, can u send it again? also send a pic of ur usc id so i know ur legit, ill send my usc id too']
   ];
   var SIGNAL_NAMES = { off_platform_payment: 'Payment outside Teezy', payment_before_transfer: 'Pay before transfer', urgency_pressure: 'Pressure to hurry',
     price_too_good: 'Price too good to be true', above_face_value: 'Above face value', suspicious_link: 'Link in the message',
-    personal_info_request: 'Asks for login or codes', impersonation: 'Claims to be USC', other: 'Other warning sign' };
+    personal_info_request: 'Asks for login, codes or your ID', impersonation: 'Fake USC proof', payment_trick: '“Payment failed” trick', other: 'Other warning sign' };
   function brokerCard() {
     return (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
   }
