@@ -754,6 +754,22 @@
   .push span{ display:block; font-size:.78rem; color:var(--ink-soft); }
   @media (max-width:520px){ .push{ top:calc(8px + env(safe-area-inset-top, 0px)); } }
   @media (prefers-reduced-motion: reduce){ .sheet, .drawer{ animation:none; } .push, .push.show, .toast{ transition:none; } .typing i{ animation:none; opacity:.7; } }
+
+  /* AI@USC: TZ broker */
+  .card.tz-broker{ display:flex; flex-direction:row; align-items:center; gap:12px; background:var(--gold-wash); border-color:var(--gold); text-align:left; }
+  .tz-broker .ls{ color:var(--gold-text); }
+  .tz-spark{ flex:none; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); font-weight:800; font-size:.85rem; letter-spacing:.02em; }
+  .tz-offer{ border-color:var(--gold); }
+  .tz-ok{ background:var(--trust-wash); color:var(--trust-text); border-radius:12px; padding:12px 14px; line-height:1.45; font-size:.92rem; }
+  .tz-warn{ background:var(--warn-wash); color:var(--warn-text); border-radius:12px; padding:12px 14px; line-height:1.45; font-size:.92rem; }
+  .tz-warn ul{ margin:8px 0 0; padding-left:0; list-style:none; display:grid; gap:10px; }
+  .tz-warn li span:not(.tz-chip){ opacity:.9; font-size:.86rem; }
+  .tz-chip{ display:inline-block; background:var(--warn-text); color:var(--warn-wash); border-radius:20px; padding:2px 8px; font-size:.72rem; font-weight:700; margin-right:4px; }
+  .tz-src{ font-size:.72rem; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+  .tz-lock{ font-size:.7rem; font-weight:700; background:var(--surface-2); color:var(--ink-soft); border-radius:20px; padding:2px 8px; margin-left:4px; }
+  .tz-two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .tz-samples{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tz-paste, .tz-share{ resize:vertical; font:inherit; line-height:1.45; }
 </style>
 
 <div class="intro">
@@ -3809,7 +3825,7 @@ document.addEventListener('click', function(e){
   var t = e.target.closest('[data-act]');
   if (!t || t.disabled) return;
   // Drawer and sheet links close the overlay first, except actions that change the overlay itself.
-  var keep = ['close', 'theme', 'invite', 'wcity', 'wgeo', 'fsend', 'pnext', 'pprev', 'preact', 'psave', 'pay', 'paymethod', 'prange', 'efint', 'efdone', 'proftab', 'sfpick', 'sfnext', 'sfback', 'sfev', 'sfqty', 'sfsrc', 'sfoffers', 'sflist', 'cospeed', 'codest', 'autopay', 'tseat', 'tsel', 'tpayback', 'tlink', 'undosend', 'tflip', 'tgo', 'tclose', 'walletadd', 'cstep', 'sendcounter', 'pstep', 'saveprice', 'where-here', 'wradius', 'wwhen', 'wday', 'wreset', 'wapply', 'set', 'takeoffer', 'declineoffer', 'sendbidcounter', 'bidcounter', 'sheetback', 'seatgo', 'seatchat', 'scan', 'dotransfer'];
+  var keep = ['close', 'theme', 'invite', 'wcity', 'wgeo', 'fsend', 'pnext', 'pprev', 'preact', 'psave', 'pay', 'paymethod', 'prange', 'efint', 'efdone', 'proftab', 'sfpick', 'sfnext', 'sfback', 'sfev', 'sfqty', 'sfsrc', 'sfoffers', 'sflist', 'cospeed', 'codest', 'autopay', 'tseat', 'tsel', 'tpayback', 'tlink', 'undosend', 'tflip', 'tgo', 'tclose', 'walletadd', 'cstep', 'sendcounter', 'pstep', 'saveprice', 'where-here', 'wradius', 'wwhen', 'wday', 'wreset', 'wapply', 'set', 'takeoffer', 'declineoffer', 'sendbidcounter', 'bidcounter', 'sheetback', 'seatgo', 'seatchat', 'scan', 'dotransfer', 'brokersample', 'brokercopy'];
   var inOverlay = t.closest('#overlay');
   fromDrawer = !!(inOverlay && S.overlay && S.overlay.k === 'drawer');
   if (inOverlay && keep.indexOf(t.dataset.act) === -1 && t.dataset.act !== 'drawer') S.overlay = null;
@@ -3899,7 +3915,7 @@ document.addEventListener('keydown', function(e){
 });
 
 // Add ?demo to the address to see the full app with sample data instead of the live backend.
-if (window.installTeezyBackend && !/[?&]demo\b/.test(location.search)) window.installTeezyBackend({ S:S, EV:EV, V:V, O:O, A:A, UPCOMING:UPCOMING, FRIEND_PLANS:FRIEND_PLANS, TEAMS:TEAMS, esc:esc, money:money, render:render, cur:cur, sheet:sheet, tab:tab, toast:toast });
+if (window.installTeezyBackend && !/[?&]demo\b/.test(location.search)) window.installTeezyBackend({ S:S, EV:EV, V:V, O:O, A:A, UPCOMING:UPCOMING, FRIEND_PLANS:FRIEND_PLANS, TEAMS:TEAMS, esc:esc, money:money, render:render, cur:cur, sheet:sheet, tab:tab, toast:toast, I:I });
 render(true);
 // Opened from someone's friend code (camera scan of the QR link): send them a request.
 var addU = /[?&]add=([^&#]+)/.exec(location.search);

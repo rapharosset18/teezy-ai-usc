@@ -7,6 +7,100 @@ window.installTeezyBackend = function (ui) {
   var orders = [], sales = [], notifications = [], desired = [], catalog = [];
   var sellerPayments = { ready: false }, transactions = { payments: [], transfers: [] };
   var login = { email: '', code: '', sent: false, hint: '' }, stream;
+  /* ---------- AI@USC: TZ broker (paste your post), offers, AI transfer check ---------- */
+  var broker = { text: '', result: null, done: null }, brokerOffers = [], aiStatus = {};
+  var SAMPLES = [
+    ['Seller post', 'Selling my Ohio State student ticket, want 70, would take 55 if it goes today'],
+    ['Buyer ISO', 'ISO 1 Ohio State ticket, can do 60 max, need it by Friday'],
+    ['Scam DM', 'hey saw ur ISO. got 2 ohio state tix $40 each, zelle me first and ill transfer right after. need them gone asap']
+  ];
+  var SIGNAL_NAMES = { off_platform_payment: 'Payment outside TZ', payment_before_transfer: 'Pay before transfer', urgency_pressure: 'Pressure to hurry',
+    price_too_good: 'Price too good to be true', above_face_value: 'Above face value', suspicious_link: 'Link in the message',
+    personal_info_request: 'Asks for login or codes', impersonation: 'Claims to be USC', other: 'Other warning sign' };
+  function brokerCard() {
+    var stats = aiStatus.posts ? '<span class="ls">' + aiStatus.posts + ' posts checked · ' + aiStatus.flagged + ' flagged</span>' : '<span class="ls">Paste a GroupMe post or a DM. TZ checks it for scams and makes it a protected trade.</span>';
+    return '<button class="card tap tz-broker" data-act="broker"><span class="tz-spark" aria-hidden="true">AI</span><span class="grow"><span class="lt">TZ broker</span>' + stats + '</span>' + (ui.I && ui.I.chev ? ui.I.chev : '') + '</button>' +
+      (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
+  }
+  function signalList(r) {
+    if (!r.scamSignals.length) return '<div class="tz-ok"><b>No scam signs found.</b> Still, only ever pay inside TZ: your money is held until the ticket is in your account.</div>';
+    return '<div class="tz-warn" role="alert"><b>' + (r.scamRisk === 'high' ? 'High scam risk' : 'Possible scam') + '</b><ul>' +
+      r.scamSignals.map(function (s) { return '<li><span class="tz-chip">' + esc(SIGNAL_NAMES[s.type] || s.type) + '</span> “' + esc(s.quote) + '”<br><span>' + esc(s.why) + '</span></li>'; }).join('') +
+      '</ul></div>';
+  }
+  function eventOptions(selected) {
+    return ui.UPCOMING.map(function (id) { return '<option value="' + esc(id) + '"' + (selected === id ? ' selected' : '') + '>' + esc(eventName(id)) + '</option>'; }).join('');
+  }
+  function brokerResult(r) {
+    var sell = r.intent === 'sell', buy = r.intent === 'buy';
+    var head = '<div class="between"><span class="lt">' + esc(r.summary || 'Here is what TZ read') + '</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>';
+    if (!sell && !buy) {
+      return head + signalList(r) + note(r.clarifyingQuestion || 'TZ could not tell if this is a sale or a request. Add “selling” or “ISO” and try again.') +
+        (r.scamRisk !== 'low' ? note('If someone sent you this, don’t pay them. Find a protected ticket on TZ instead.') : '') + button('Try another message', 'brokeragain', '', true);
+    }
+    var received = r.messageKind === 'received';
+    if (received) head = '<div class="between"><span class="lt">A message someone sent you</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>' + note(r.summary);
+    var price = received ? '' : sell ? r.publicPrice : (r.privateLimit || r.publicPrice);
+    var limit = sell ? (r.privateLimit || '') : '';
+    return head + signalList(r) +
+      (received && r.scamRisk !== 'low' ? '<div class="tz-warn"><b>Don’t pay this person directly.</b> Ask them to list on TZ, or get the same ticket here with your money held until it’s in your account.</div>' : '') +
+      (r.clarifyingQuestion && !received ? note(r.clarifyingQuestion) : '') +
+      '<form data-backend="aisubmit" class="stack">' +
+      '<input type="hidden" name="intent" value="' + r.intent + '">' +
+      '<label class="stack" style="gap:6px">Event<select class="field" name="eventId">' + eventOptions(r.eventId) + '</select></label>' +
+      '<div class="tz-two">' + input('Tickets', 'qty', 'number', r.quantity || 1, 'min="1" max="4"') +
+      input(sell ? 'Listed price ($)' : 'Most you’ll pay ($)', 'price', 'number', price || '', 'min="1" step="1"') + '</div>' +
+      (sell ? '<label class="stack" style="gap:6px"><span>Lowest you’ll take ($) <span class="tz-lock">Private</span></span><input class="field" name="floor" type="number" min="1" step="1" value="' + esc(limit) + '"></label>' +
+        note('Buyers never see this. The broker uses it to close deals for you, never below it.') :
+        note('Your max stays private. The broker finds the lowest price that works.')) +
+      (r.event ? note('Face value for this event: $' + r.event.faceValue + '. TZ caps student resale at face value.') : '') +
+      '<p id="backend-error" class="sub" role="alert"></p>' + submit(received && buy ? 'Find this ticket safely' : sell ? 'List with protection' : 'Find me a ticket') + '</form>';
+  }
+  function brokerDone(d) {
+    var b = d.broker || {}, lines = {
+      matched: 'The broker matched you with a buyer at ' + money((b.priceCents || 0) / 100) + ', between your floor and their max. They’ve been alerted to pay.',
+      offer: 'Limits didn’t meet, so the broker sent a private offer at ' + money((b.priceCents || 0) / 100) + ' to you and the closest ' + (d.listing ? 'buyer' : 'seller') + '. Answer it in your inbox.',
+      available: 'Tickets at or under your price are listed right now.',
+      waiting: d.listing ? 'Your listing is live. The broker will tell you when a buyer gets close.' : 'Your request is live. The broker alerts you the moment a ticket fits.'
+    };
+    var share = d.listing ? location.origin + '/?event=' + encodeURIComponent(d.listing.eventId) : '';
+    return '<div class="tz-ok"><b>' + (d.listing ? 'Listed with protection' : 'Request saved') + '</b><br>' + esc(lines[b.outcome] || lines.waiting) + '</div>' +
+      (share ? '<label class="stack" style="gap:6px">Post this back in the group chat<textarea class="field tz-share" readonly rows="3">' + esc('Selling on TZ for Trojans. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
+      (b.outcome === 'available' && d.desired ? button('See tickets', 'event', 'data-ev="' + esc(d.desired.eventId) + '"') : '') +
+      (b.outcome === 'offer' ? button('Open inbox', 'brokerinbox') : '') + button('Paste another post', 'brokeragain', '', true);
+  }
+  O.broker = function () {
+    var body;
+    if (broker.done) body = brokerDone(broker.done);
+    else if (broker.result) body = brokerResult(broker.result);
+    else body = note('Paste the message you’d post in the GroupMe, or a DM someone sent you. TZ reads it, checks it for scams, and turns it into a protected trade.') +
+      '<form data-backend="readpost" class="stack"><textarea class="field tz-paste" name="text" rows="4" maxlength="2000" placeholder="Selling my UCLA ticket, want 70, would take 55 if it goes today" required>' + esc(broker.text) + '</textarea>' +
+      '<div class="tz-samples">' + SAMPLES.map(function (s, i) { return '<button type="button" class="chip" data-act="brokersample" data-i="' + i + '">' + esc(s[0]) + '</button>'; }).join('') + '</div>' +
+      '<p id="backend-error" class="sub" role="alert"></p>' + submit('Read my post') + '</form>' +
+      note('AI proposes, code decides: the AI reads your words, but prices, matches and payouts are set by fixed rules.');
+    return panel('TZ broker', body);
+  };
+  A.broker = function () { if (!signedIn()) return; broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
+  A.brokersample = function (d) { broker.text = SAMPLES[+d.i][1]; var t = document.querySelector('.tz-paste'); if (t) t.value = broker.text; else ui.sheet({ k: 'broker' }); };
+  A.brokeragain = function () { broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
+  A.brokerinbox = function () { S.overlay = null; ui.tab('inbox'); };
+  A.brokercopy = function () { var t = document.querySelector('.tz-share'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(function () { ui.toast('Copied. Paste it in the group chat.'); }, function () { t.select(); ui.toast('Select and copy the message'); }); };
+  A.offeranswer = function (d) { return run(async function () {
+    var o = await api('POST', '/api/broker/offers/' + d.id, { accept: d.yes === '1' }); await refresh();
+    ui.toast(o.status === 'accepted' ? 'Deal agreed at ' + money(o.priceCents / 100) + '. ' + (o.side === 'buy' ? 'Tap the alert to pay.' : 'The buyer is paying now.') : o.status === 'declined' ? 'Offer declined. Your listing stays as it was.' : 'Got it. Waiting on the other side.');
+  }); };
+  function offerCard(o) {
+    return '<div class="card tz-offer"><span class="lt">TZ broker · ' + esc(o.eventName) + '</span>' + note(o.message) +
+      (o.status === 'open' && o.myAnswer == null ? '<div class="btn-grid">' + button('Meet at ' + money(o.priceCents / 100), 'offeranswer', 'data-id="' + o.id + '" data-yes="1"') + button('No thanks', 'offeranswer', 'data-id="' + o.id + '" data-yes="0"', true) + '</div>' :
+        note(o.status === 'accepted' ? 'Both agreed at ' + money(o.priceCents / 100) + '.' : o.status === 'declined' ? 'Declined.' : o.status === 'closed' ? 'No longer available.' : 'You said yes. Waiting on the other side.')) + '</div>';
+  }
+  function aiCheckCard(c) {
+    if (!c) return '';
+    var ok = c.verdict === 'matches';
+    return '<div class="' + (ok ? 'tz-ok' : 'tz-warn') + '"><b>' + (ok ? 'AI check: your screen matches this deal' : c.verdict === 'mismatch' ? 'AI check: this does not match the deal' : 'AI check: could not confirm') + '</b><br>' + esc(c.explanation) +
+      (c.editingSigns && c.editingSigns.length ? '<br>Possible edits: ' + esc(c.editingSigns.join('; ')) : '') + '<br><span class="tz-src">' + (c.source === 'ai' ? 'Read by Claude' : 'AI offline') + ' · you still decide</span></div>';
+  }
+
   var originalHome = V.home, originalSearch = V.search, originalEvent = V.event, originalSeatsheet = O.seatsheet;
   var originalEvents = Object.values(EV).map(function (e) { return Object.assign({}, e); });
   ['offers', 'tickets', 'selling', 'sales', 'requests', 'threads', 'activity', 'parking'].forEach(function (key) { S[key] = []; });
@@ -92,6 +186,8 @@ window.installTeezyBackend = function (ui) {
       user && runtime.stripePayments ? api('GET', '/api/me/seller-payments').catch(function () { return { ready: false, unavailable: true }; }) : { ready: false }]);
     if (current !== generation) return;
     transactions = financial[0]; sellerPayments = financial[1];
+    brokerOffers = user ? await api('GET', '/api/broker/offers').catch(function () { return []; }) : [];
+    aiStatus = await api('GET', '/api/ai/status').catch(function () { return {}; });
     data[1].forEach(adaptEvent);
     ui.UPCOMING.splice(0); data[1].filter(function (e) { return !EV[e.id].past; }).forEach(function (e) { ui.UPCOMING.push(e.id); });
     S.listings = catalog.filter(function (l) { return !me || l.sellerId !== me.id; }).map(function (l) {
@@ -171,8 +267,8 @@ window.installTeezyBackend = function (ui) {
   }
 
   V.home = function () {
-    return originalHome().replace('<div class="body">', '<div class="body">' + paymentNote() + (me ? note('Signed in as ' + me.displayName) : button('Sign in to buy or sell', 'login')) +
-      button('Refresh listings', 'reload', '', true) + (runtime.transferTesting ? '<a class="btn btn-ghost" href="/transfer-test.html">Test ticket transfers</a>' : '') + (ui.UPCOMING.length ? '' : empty('No upcoming events yet.')));
+    return originalHome().replace('<div class="body">', '<div class="body">' + brokerCard() + (me ? '' : button('Sign in with your USC email', 'login')) +
+      (ui.UPCOMING.length ? '' : empty('No upcoming events yet.')));
   };
   V.search = originalSearch;
   // The designed event page and seat sheet, on real listings. Buying is real; there is no offers or chat
@@ -256,7 +352,7 @@ window.installTeezyBackend = function (ui) {
     sales.forEach(function (o) { o.fills.filter(function (f) { return ['held', 'transferred', 'confirmed'].indexOf(f.escrowStatus) >= 0 || f.problemReportedAt || (!f.hasProof && f.escrowStatus === 'released'); }).forEach(function (f) { content += saleCard(o, f); }); });
     return shell('Dashboard', content + button('Refresh account', 'reload', '', true));
   };
-  V.inbox = function () { return me ? shell('Inbox', notifications.length ? notifications.map(function (n) { return '<div class="card"><span class="lt">' + esc(n.title) + '</span>' + note(n.body) + '</div>'; }).join('') : empty('No notifications yet. Transfer updates appear in My Tickets.')) : accountPrompt('Inbox'); };
+  V.inbox = function () { return me ? shell('Inbox', brokerOffers.map(offerCard).join('') + (notifications.length ? notifications.map(function (n) { return '<div class="card"><span class="lt">' + esc(n.title) + '</span>' + note(n.body) + '</div>'; }).join('') : empty('No notifications yet. Transfer updates appear in My Tickets.'))) : accountPrompt('Inbox'); };
   V.saved = function () { return shell('Saved', desired.length ? desired.map(function (d) { return '<div class="card"><span class="lt">' + esc(eventName(d.eventId)) + '</span>' + note('Saved ticket alert · ' + money(d.maxPriceCents / 100) + ' maximum') + '</div>'; }).join('') : empty('No saved ticket alerts. Offers and chat are coming in a later step.')); };
   ['friends', 'album', 'org'].forEach(function (name) { V[name] = function () { return shell(name === 'org' ? 'Organizations' : name[0].toUpperCase() + name.slice(1), note('This feature is coming after the ticket marketplace.') + button('Back', 'back', '', true)); }; });
   V.calendar = function () { return shell('Your events', S.tickets.length ? S.tickets.map(function (t) { return '<div class="card"><span class="lt">' + esc(eventName(t.ev)) + '</span>' + note(EV[t.ev].date + ' · ' + EV[t.ev].time) + '</div>'; }).join('') : empty('Your purchased events will appear here.')); };
@@ -291,6 +387,8 @@ window.installTeezyBackend = function (ui) {
         (f.confirmedAt ? note('Receipt confirmed: ' + new Date(f.confirmedAt).toLocaleString()) : '') +
         (f.autoConfirmed ? note('Confirmed automatically because no problem was reported.') : '') +
         (f.problemReportedAt ? note('Problem reported. The seller’s payment is paused while Teezy reviews it.') : '') +
+        aiCheckCard(f.aiCheck) +
+        (f.escrowStatus === 'transferred' ? '<form data-backend="aicheck" data-order="' + order.id + '" data-fill="' + f.id + '" class="stack tz-check"><label class="stack" style="gap:6px">Check with AI: upload a screenshot of your USC ticket account<input class="field" name="shot" type="file" accept="image/png,image/jpeg,image/webp"></label>' + submit(f.aiCheck ? 'Check another screenshot' : 'Check my ticket screen') + '</form>' : '') +
         (f.escrowStatus === 'transferred' ? note('Confirm only after checking that the tickets arrived in your official ticketing account.') + button('Confirm receipt', 'confirmfill', 'data-order="' + order.id + '" data-fill="' + f.id + '"') +
           (f.problemReportedAt ? '' : button('Report a problem', 'reportfill', 'data-order="' + order.id + '" data-fill="' + f.id + '"', true) +
             (paymentFor(order.id) && paymentFor(order.id).status === 'succeeded' ? note('If you do nothing, this confirms automatically ' + runtime.autoConfirmHours + ' hours after the event starts.') : '')) : '') + '</div>'; }).join('') +
@@ -399,6 +497,22 @@ window.installTeezyBackend = function (ui) {
         if (!values.proof || !values.proof.size) throw new Error('Choose a file first.');
         await api('POST', '/api/orders/' + form.dataset.order + '/fills/' + form.dataset.fill + '/proof', await readProof(values.proof));
         S.overlay = null; await refresh(); ui.toast('Proof saved. You’re covered if the buyer files a chargeback.');
+      } else if (kind === 'readpost') {
+        broker.text = values.text;
+        broker.result = await api('POST', '/api/ai/read-post', { text: values.text });
+        ui.sheet({ k: 'broker' });
+      } else if (kind === 'aisubmit') {
+        var r = broker.result, cents = function (v) { return v === '' || v == null ? null : Math.round(Number(v) * 100); };
+        var common = { eventId: values.eventId, qty: Number(values.qty) || 1, sourceText: broker.text, scamRisk: r.scamRisk, summary: r.summary };
+        broker.done = values.intent === 'sell'
+          ? await api('POST', '/api/ai/listing', Object.assign(common, { priceCents: cents(values.price), floorCents: cents(values.floor) }))
+          : await api('POST', '/api/ai/request', Object.assign(common, { maxPriceCents: cents(values.price) }));
+        await refresh(); ui.sheet({ k: 'broker' });
+      } else if (kind === 'aicheck') {
+        if (!values.shot || !values.shot.size) throw new Error('Choose a screenshot first.');
+        var shot = await readProof(values.shot);
+        await api('POST', '/api/orders/' + form.dataset.order + '/fills/' + form.dataset.fill + '/ai-check', { contentType: shot.contentType, data: shot.data });
+        await refresh(); ui.sheet({ k: 'order', id: form.dataset.order });
       } else if (kind === 'report') {
         await api('POST', '/api/orders/' + form.dataset.order + '/fills/' + form.dataset.fill + '/report', { reason: values.reason });
         await refresh(); ui.sheet({ k: 'order', id: form.dataset.order }); ui.toast('Problem reported. The seller’s payment is paused.');

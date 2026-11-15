@@ -39,8 +39,9 @@ const SIGNAL_TYPES = [
 const POST_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['intent', 'event_id', 'quantity', 'public_price', 'private_limit', 'deadline', 'summary', 'clarifying_question', 'scam_risk', 'scam_signals'],
+  required: ['message_kind', 'intent', 'event_id', 'quantity', 'public_price', 'private_limit', 'deadline', 'summary', 'clarifying_question', 'scam_risk', 'scam_signals'],
   properties: {
+    message_kind: { type: 'string', enum: ['my_post', 'received'] },
     intent: { type: 'string', enum: ['sell', 'buy', 'unclear'] },
     event_id: { type: ['string', 'null'] },
     quantity: { type: 'integer' },
@@ -69,7 +70,8 @@ const POST_SCHEMA = {
 const POST_SYSTEM = `You work inside TZ, a protected ticket exchange for USC students. Students paste the kind of message they would post in a GroupMe ticket chat, or a DM they received. You turn it into a structured order and check it for scam signs.
 
 Fields:
-- intent: "sell" if they are selling, "buy" if they want a ticket (ISO, "looking for", "need", "buying"), else "unclear".
+- message_kind: "my_post" if the student wrote it to post themselves, "received" if it is a message someone else sent them (it talks to "you", replies to their ISO, or tells them how to pay).
+- intent: for "my_post", "sell" if they are selling, "buy" if they want a ticket (ISO, "looking for", "need", "buying"), else "unclear". For "received", the intent of the student who pasted it: "buy" if someone is offering to sell to them, "sell" if someone wants to buy from them.
 - event_id: the id of the matching event from the event list, or null if none clearly matches.
 - quantity: number of tickets, default 1.
 - public_price: the price they openly ask (seller) or offer (buyer). Null if none.
@@ -98,6 +100,7 @@ function clean(r, events) {
   const event = events.find((e) => e.id === r.event_id) || null;
   const money = (v) => (typeof v === 'number' && v > 0 && v < 10000 ? Math.round(v * 100) / 100 : null);
   return {
+    messageKind: r.message_kind === 'received' ? 'received' : 'my_post',
     intent: ['sell', 'buy'].includes(r.intent) ? r.intent : 'unclear',
     eventId: event ? event.id : null,
     quantity: Number.isInteger(r.quantity) && r.quantity > 0 && r.quantity <= 8 ? r.quantity : 1,
@@ -127,7 +130,9 @@ function mergeRules(result, rules, source) {
 
 function offlineReadPost(text, events, rules) {
   const t = text.toLowerCase();
-  const intent = /\b(iso|looking for|need|buying|want to buy|wtb)\b/.test(t) ? 'buy'
+  const received = /\b(saw (?:ur|your)|(?:zelle|venmo|cash ?app|pay) me|dm me|i(?:'ll| will) (?:send|transfer)|ill (?:send|transfer)|you can have)\b/.test(t);
+  const intent = received ? (/\b(i have|got|selling|have \d)\b/.test(t) ? 'buy' : 'sell')
+    : /\b(iso|looking for|need|buying|want to buy|wtb)\b/.test(t) ? 'buy'
     : /\b(selling|sell|wts|have \d|for sale)\b/.test(t) ? 'sell' : 'unclear';
   const prices = findPrices(text).filter((p) => !rules.event || p !== rules.event.faceValue || findPrices(text).length === 1);
   const event = rules.event;
@@ -135,13 +140,16 @@ function offlineReadPost(text, events, rules) {
   const publicPrice = prices[0] ?? null;
   const privateLimit = prices.length > 1 ? prices[1] : null;
   return mergeRules({
+    messageKind: received ? 'received' : 'my_post',
     intent,
     eventId: event ? event.id : null,
     quantity: qty,
     publicPrice,
     privateLimit,
     deadline: (t.match(/\b(today|tonight|tomorrow|by \w+day|this week)\b/) || [])[0] || null,
-    summary: `${intent === 'buy' ? 'Wants' : intent === 'sell' ? 'Selling' : 'About'} ${qty} ticket${qty > 1 ? 's' : ''}${event ? ` for ${event.name}` : ''}${publicPrice ? ` at $${publicPrice}` : ''}.`,
+    summary: received
+      ? `Someone ${intent === 'buy' ? 'is offering you' : 'wants to buy'} ${qty} ticket${qty > 1 ? 's' : ''}${event ? ` for ${event.name}` : ''}${publicPrice ? ` at $${publicPrice}` : ''}.`
+      : `${intent === 'buy' ? 'Wants' : intent === 'sell' ? 'Selling' : 'About'} ${qty} ticket${qty > 1 ? 's' : ''}${event ? ` for ${event.name}` : ''}${publicPrice ? ` at $${publicPrice}` : ''}.`,
     clarifyingQuestion: !event ? 'Which game or event is this for?' : !publicPrice ? 'What price do you have in mind?' : null,
     scamRisk: 'low',
     scamSignals: [],
