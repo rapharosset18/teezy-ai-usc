@@ -259,7 +259,7 @@
   .nmap .ring{ fill:none; stroke:var(--ink-faint); stroke-width:1; stroke-dasharray:3 4; }
   .nmap .me{ position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; background:#3B82F6; box-shadow:0 0 0 3px var(--bg), 0 0 0 9px rgba(59,130,246,.18); }
   .nmap .pin{ position:absolute; width:26px; height:26px; margin:-26px 0 0 -13px; border:none; padding:0; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:var(--accent); box-shadow:inset 0 0 0 1.5px #0E0E10, 0 4px 10px -4px var(--shadow); display:grid; place-items:center; }
-  .nmap .pin span{ transform:rotate(45deg); font-size:.72rem; font-weight:900; color:#0E0E10; }
+  .nmap .pin span{ transform:rotate(45deg); font-size:.72rem; font-weight:900; color:#fff; }
   .nmap .tag{ position:absolute; left:10px; bottom:10px; background:var(--surface); color:var(--ink); border-radius:999px; padding:4px 10px; font-size:.7rem; font-weight:800; box-shadow:inset 0 0 0 1.5px var(--line-soft); }
   .nmap.tap{ cursor:zoom-in; }
   .nmap .expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:50%; background:var(--surface); color:var(--ink); display:grid; place-items:center; box-shadow:inset 0 0 0 1.5px var(--line-soft); pointer-events:none; }
@@ -306,7 +306,7 @@
   @media (max-width:520px){ .mf-close{ top:calc(14px + env(safe-area-inset-top, 0px)); } }
   .mapfull .tag{ left:auto; right:16px; bottom:34px; }
   .mf-sheet{ position:relative; z-index:1; margin-top:-22px; max-height:46%; overflow-y:auto; background:var(--bg); border-radius:22px 22px 0 0; padding:10px 18px calc(18px + env(safe-area-inset-bottom, 0px)); display:flex; flex-direction:column; gap:6px; box-shadow:0 -10px 24px -14px var(--shadow); }
-  .nrow .num{ width:26px; height:26px; border-radius:50%; background:var(--accent); color:#0E0E10; box-shadow:inset 0 0 0 1.5px #0E0E10; display:grid; place-items:center; font-size:.72rem; font-weight:900; }
+  .nrow .num{ width:26px; height:26px; border-radius:50%; background:var(--accent); color:#fff; box-shadow:inset 0 0 0 1.5px #0E0E10; display:grid; place-items:center; font-size:.72rem; font-weight:900; }
   .mgrid{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(2,auto); grid-auto-columns:calc((100% - 40px) / 2); gap:10px; overflow-x:auto; margin:0 -18px; padding:2px 18px 6px; scroll-padding:0 18px; scroll-snap-type:x mandatory; scrollbar-width:none; }
   .mgrid::-webkit-scrollbar{ display:none; }
   .mgrid > div{ position:relative; scroll-snap-align:start; }
@@ -756,6 +756,15 @@
   @media (prefers-reduced-motion: reduce){ .sheet, .drawer{ animation:none; } .push, .push.show, .toast{ transition:none; } .typing i{ animation:none; opacity:.7; } }
 
   /* AI@USC: Teezy broker */
+  /* Teezy logo in the home header: opens the AI broker, which grows out of it. */
+  .tz-logo{ margin-left:auto; position:relative; display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 12px 0 13px; border-radius:999px; border:1.5px solid var(--gold); background:var(--gold-wash); color:var(--ink); font:inherit; font-weight:900; font-size:1.12rem; letter-spacing:-.02em; cursor:pointer; transition:transform .18s cubic-bezier(.3,1.4,.5,1), box-shadow .2s ease; }
+  .tz-wm{ display:inline-flex; align-items:baseline; line-height:1; }
+  .tz-logo i{ font-style:normal; display:inline-block; width:.3em; height:.3em; border-radius:2px; background:var(--accent); margin-left:2px; box-shadow:0 0 0 1.5px var(--ink); }
+  .tz-logo .tz-ai{ font-size:.62rem; font-weight:800; letter-spacing:.04em; color:#fff; background:var(--accent); border-radius:6px; padding:2px 5px; }
+  .tz-logo:hover{ box-shadow:0 6px 16px -8px var(--shadow); }
+  .tz-logo:active, .tz-logo.pressed{ transform:scale(.92); }
+  .tz-logo .nb{ position:absolute; top:-5px; right:-5px; }
+  .sheet.tz-grow{ will-change:transform, opacity; }
   .card.tz-broker{ display:flex; flex-direction:row; align-items:center; gap:12px; background:var(--gold-wash); border-color:var(--gold); text-align:left; }
   .tz-broker .ls{ color:var(--gold-text); }
   .tz-spark{ flex:none; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); font-weight:800; font-size:.85rem; letter-spacing:.02em; }

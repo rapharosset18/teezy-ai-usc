@@ -18,9 +18,7 @@ window.installTeezyBackend = function (ui) {
     price_too_good: 'Price too good to be true', above_face_value: 'Above face value', suspicious_link: 'Link in the message',
     personal_info_request: 'Asks for login or codes', impersonation: 'Claims to be USC', other: 'Other warning sign' };
   function brokerCard() {
-    var stats = aiStatus.posts ? '<span class="ls">' + aiStatus.posts + ' posts checked · ' + aiStatus.flagged + ' flagged</span>' : '<span class="ls">Paste a GroupMe post or a DM. Teezy checks it for scams and makes it a protected trade.</span>';
-    return '<button class="card tap tz-broker" data-act="broker"><span class="tz-spark" aria-hidden="true">AI</span><span class="grow"><span class="lt">Teezy broker</span>' + stats + '</span>' + (ui.I && ui.I.chev ? ui.I.chev : '') + '</button>' +
-      (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
+    return (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
   }
   function signalList(r) {
     if (!r.scamSignals.length) return '<div class="tz-ok"><b>No scam signs found.</b> Still, only ever pay inside Teezy: your money is held until the ticket is in your account.</div>';
@@ -81,7 +79,40 @@ window.installTeezyBackend = function (ui) {
       note('AI proposes, code decides: the AI reads your words, but prices, matches and payouts are set by fixed rules.');
     return panel('Teezy broker', body);
   };
-  A.broker = function () { if (!signedIn()) return; broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
+  // The broker sheet grows out of the Teezy logo and shrinks back into it when closed.
+  function logoMorph(sheetEl, logo) {
+    var a = logo.getBoundingClientRect(), b = sheetEl.getBoundingClientRect();
+    var dx = (a.left + a.width / 2) - (b.left + b.width / 2), dy = (a.top + a.height / 2) - (b.top + b.height / 2);
+    return ['translate(' + dx + 'px,' + dy + 'px) scale(' + Math.max(a.width / b.width, .08) + ',' + Math.max(a.height / b.height, .04) + ')', 'none'];
+  }
+  function calm() { return matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  A.broker = function (d, el) {
+    if (!signedIn()) return;
+    broker = { text: '', result: null, done: null };
+    var logo = el && el.closest && el.closest('.tz-logo');
+    ui.sheet({ k: 'broker' });
+    var sh = document.querySelector('#overlay .sheet'), scrim = document.querySelector('#overlay .scrim');
+    if (!logo || !sh || calm() || !sh.animate) return;
+    sh.style.animation = 'none'; sh.classList.add('tz-grow');
+    var t = logoMorph(sh, logo);
+    sh.animate([{ transform: t[0], opacity: 0, borderRadius: '999px' }, { opacity: 1, offset: .35 }, { transform: t[1], opacity: 1, borderRadius: '26px 26px 0 0' }],
+      { duration: 520, easing: 'cubic-bezier(.2,.9,.22,1)' });
+    if (scrim) { scrim.style.animation = 'none'; scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' }); }
+  };
+  var plainClose = A.close;
+  A.close = function (d, el) {
+    var sh = document.querySelector('#overlay .sheet'), logo = document.querySelector('.tz-logo'), scrim = document.querySelector('#overlay .scrim');
+    if (!ui.S.overlay || ui.S.overlay.k !== 'broker' || !sh || !logo || calm() || !sh.animate || sh.dataset.closing) return plainClose(d, el);
+    sh.dataset.closing = '1';
+    var t = logoMorph(sh, logo);
+    if (scrim) scrim.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+    sh.animate([{ transform: 'none', opacity: 1, borderRadius: '26px 26px 0 0' }, { opacity: 1, offset: .6 }, { transform: t[0], opacity: 0, borderRadius: '999px' }],
+      { duration: 380, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' }).onfinish = function () {
+        plainClose(d, el);
+        logo = document.querySelector('.tz-logo');
+        if (logo) logo.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' });
+      };
+  };
   A.brokersample = function (d) { broker.text = SAMPLES[+d.i][1]; var t = document.querySelector('.tz-paste'); if (t) t.value = broker.text; else ui.sheet({ k: 'broker' }); };
   A.brokeragain = function () { broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
   A.brokerinbox = function () { S.overlay = null; ui.tab('inbox'); };
@@ -271,8 +302,14 @@ window.installTeezyBackend = function (ui) {
       (f.escrowStatus === 'confirmed' ? note('Stripe transfer becomes eligible ' + runtime.payoutDelayHours + ' hours after the event starts. Refunds and disputes pause transfers.') : '') + '</div>';
   }
 
+  function teezyLogo() {
+    var open = brokerOffers.filter(function (o) { return o.status === 'open' && o.myAnswer == null; }).length;
+    return '<button class="tz-logo" data-act="broker" aria-label="Teezy broker: AI scam check and matching' + (open ? ', ' + open + ' offer waiting' : '') + '"><span class="tz-wm">teezy<i></i></span><span class="tz-ai" aria-hidden="true">AI</span>' +
+      (open ? '<span class="nb">' + open + '</span>' : '') + '</button>';
+  }
   V.home = function () {
-    return originalHome().replace('<div class="body">', '<div class="body">' + brokerCard() + (me ? '' : button('Sign in with your USC email', 'login')) +
+    return originalHome().replace(/(data-act="where"[^>]*>[\s\S]*?<\/button>)<\/div>/, '$1' + teezyLogo() + '</div>')
+      .replace('<div class="body">', '<div class="body">' + brokerCard() + (me ? '' : button('Sign in with your USC email', 'login')) +
       (ui.UPCOMING.length ? '' : empty('No upcoming events yet.')));
   };
   V.search = originalSearch;
