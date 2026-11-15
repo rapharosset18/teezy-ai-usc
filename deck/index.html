@@ -190,6 +190,35 @@
   .map .p{ position:absolute; transform:translate(-50%, -50%); font-size:14.5px; font-weight:800; padding:7px 11px; border-radius:999px; background:#fff; border:1.5px solid var(--line); white-space:nowrap; }
   .map .p.us{ background:var(--cardinal); color:#fff; border-color:var(--cardinal); font-size:16px; }
 
+  /* 11 comparison */
+  .cmphead{ display:flex; justify-content:space-between; align-items:flex-end; gap:30px; }
+  .cmphead h2{ font-size:40px; white-space:nowrap; }
+  .cmplede{ width:300px; flex:none; font-size:17px; line-height:1.4; color:var(--soft); font-weight:600; padding-bottom:4px; }
+  .cmx{ position:relative; margin-top:22px; display:grid; gap:0; }
+  .cr{ display:grid; grid-template-columns:236px 128px repeat(6, 1fr); align-items:center; border-bottom:1.5px solid var(--line); min-height:52px; position:relative; z-index:1; }
+  .cr.hd{ border-bottom:2px solid var(--ink); min-height:56px; }
+  .cr .lab{ font-size:15.5px; font-weight:800; line-height:1.2; padding-right:10px; }
+  .cr .lab small{ display:block; font-size:12.5px; font-weight:600; color:var(--faint); margin-top:2px; }
+  .cr .c{ text-align:center; font-size:13px; font-weight:700; color:var(--soft); display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 4px; line-height:1.15; }
+  .cr.hd .c b{ font-size:14.5px; color:var(--ink); }
+  .cr.hd .c small{ font-size:11px; color:var(--faint); font-weight:700; }
+  .cr .c em{ font-style:normal; font-size:11.5px; color:var(--faint); font-weight:700; }
+  .y{ width:24px; height:24px; border-radius:50%; background:var(--green-wash); color:var(--green); display:grid; place-items:center; font-size:14px; font-weight:900; }
+  .x{ color:#C9C3B8; font-size:18px; font-weight:900; }
+  .m{ font-size:12px; font-weight:800; color:var(--warn-text); background:var(--warn-wash); border-radius:999px; padding:3px 8px; }
+  .fee{ font-size:13px; font-weight:800; color:var(--ink); }
+  .cr .c.tz{ color:#fff; }
+  .cr .c.tz .y{ background:#fff; color:var(--cardinal); }
+  .cr .c.tz em{ color:rgba(255,255,255,.85); }
+  .cr .c.tz .fee{ color:var(--gold); font-size:16px; }
+  .tzname{ font-size:22px; font-weight:900; letter-spacing:-.02em; color:#fff; }
+  .tzname i{ display:inline-block; width:.3em; height:.3em; border-radius:2px; background:var(--gold); margin-left:2px; }
+  /* the highlighted Teezy column sits behind its cells */
+  .tzglow{ position:absolute; top:-10px; bottom:-10px; left:236px; width:128px; border-radius:18px; background:var(--cardinal); box-shadow:0 22px 40px -18px rgba(153,0,0,.7); z-index:0; }
+  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+8) .c.tz .y{ box-shadow:0 0 0 4px rgba(255,204,0,.6); }
+  .s-cmp.lit .cr:nth-child(n+6):nth-child(-n+8){ background:linear-gradient(90deg, rgba(255,204,0,.16), rgba(255,204,0,0) 80%); }
+  .cmpnote{ font-size:12.5px; color:var(--faint); margin-top:20px; }
+
   /* 12 rollout */
   .phases{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-top:34px; }
   .phase{ border-top:6px solid var(--line); padding-top:16px; display:flex; flex-direction:column; gap:10px; }
@@ -220,8 +249,8 @@
   /* transition effects */
   .scanline{ position:absolute; left:0; right:0; height:4px; background:var(--gold); box-shadow:0 0 24px 8px rgba(255,204,0,.55), 0 0 2px 1px #fff; z-index:25; }
   .scangrid{ position:absolute; left:0; right:0; height:90px; background:repeating-linear-gradient(0deg, rgba(255,204,0,.16) 0 1px, transparent 1px 9px); z-index:24; }
-  .bar{ position:absolute; top:0; bottom:0; background:var(--cardinal); z-index:25; }
-  .bar.g{ background:var(--gold); }
+  .blind{ position:absolute; top:0; bottom:0; background:var(--cardinal); z-index:25; }
+  .blind.g{ background:var(--gold); }
   .ring{ position:absolute; left:50%; top:50%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:6px solid var(--green); z-index:25; }
   .flyer{ position:absolute !important; z-index:26; margin:0 !important; transform-origin:0 0; pointer-events:none; visibility:visible !important; }
   .half{ position:absolute; inset:0; z-index:22; display:flex !important; }
@@ -441,30 +470,24 @@
   </section>
 
   <!-- 11 -->
-  <section class="slide" data-in="flip" data-notes="DPS gave students a checklist. Teezy does every item on it automatically. [click] And compared with what students use today, Teezy is the only option built for USC students that protects the trade end to end with AI.">
-    <p class="kicker">Why Teezy · Impact</p>
-    <h2>Teezy does what DPS asks students to do.</h2>
-    <div class="cmp">
-      <table>
-        <tr><th>DPS advice</th><th>Teezy</th></tr>
-        <tr data-auto><td>Use a platform with buyer protection</td><td><b>Money held on Stripe until the ticket arrives</b></td></tr>
-        <tr data-auto><td>Confirm the official transfer</td><td><b>Seller transfers in the USC app, AI checks it</b></td></tr>
-        <tr data-auto><td>Don't trust ID photos or profiles</td><td><b>USC email check, no ID photos</b></td></tr>
-        <tr data-auto><td>Watch for urgency, repeat payments, changed accounts</td><td><b>AI and rules flag them in the message</b></td></tr>
-        <tr data-auto><td>Keep screenshots as evidence</td><td><b>Every trade and check is logged</b></td></tr>
-      </table>
-      <div class="map" data-build="1">
-        <div class="vx"></div><div class="hx"></div>
-        <span class="ax" style="left:50%;top:6px;transform:translateX(-50%)">Protected trade</span>
-        <span class="ax" style="left:50%;bottom:6px;transform:translateX(-50%)">No protection</span>
-        <span class="ax" style="right:12px;top:50%;transform:translateY(40%)">USC only →</span>
-        <span class="ax" style="left:12px;top:50%;transform:translateY(40%)">← Anyone</span>
-        <span class="p" style="left:76%;top:80%">GroupMe / Venmo</span>
-        <span class="p" style="left:26%;top:22%">StubHub · SeatGeek</span>
-        <span class="p" style="left:68%;top:33%">Campus resale apps</span>
-        <span class="p us" style="left:78%;top:16%">teezy + AI</span>
-      </div>
+  <section class="slide s-cmp" data-in="flip" data-hook="cmp" data-notes="Here's how we compare. Big marketplaces like StubHub, Ticketmaster, Gametime and USC's own partner SeatGeek protect buyers with a guarantee, but anyone can sell, and prices aren't capped. Student Seats is closest: verified students and escrow. [click] But only Teezy uses AI: it checks the group-chat messages where scams actually start, brokers a fair price without anyone revealing their limit, and checks the transfer before the seller is paid.">
+    <div class="cmphead">
+      <div><p class="kicker">Comparative analysis · Impact</p><h2>Only Teezy puts AI where scams start.</h2></div>
+      <p class="cmplede">Guarantees refund you <i>after</i> something goes wrong. Teezy stops it before you pay.</p>
     </div>
+    <div class="cmx" data-cmx>
+      <div class="tzglow" aria-hidden="true"></div>
+      <div class="cr hd"><div class="lab"></div><div class="c tz"><span class="tzname">teezy<i></i></span></div><div class="c"><b>Student Seats</b></div><div class="c"><b>SeatGeek</b><small>USC's official resale</small></div><div class="c"><b>StubHub</b></div><div class="c"><b>Ticketmaster</b></div><div class="c"><b>Gametime</b></div><div class="c"><b>GroupMe + Venmo</b></div></div>
+      <div class="cr" data-auto><div class="lab">Verified students only<small>no strangers or fake profiles</small></div><div class="c tz"><span class="y">✓</span><em>USC email</em></div><div class="c"><span class="y">✓</span><em>school email</em></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">Money held until the ticket arrives<small>seller isn't paid first</small></div><div class="c tz"><span class="y">✓</span><em>Stripe escrow</em></div><div class="c"><span class="y">✓</span><em>Trustap escrow</em></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="m">Guarantee</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">Price capped at face value<small>no price-gouging</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">AI scam check on chats and DMs<small>flags DPS scam tactics</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">Private AI broker<small>fair price, limits stay secret</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">AI checks the transfer<small>screenshot matched to the order</small></div><div class="c tz"><span class="y">✓</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div><div class="c"><span class="x">—</span></div></div>
+      <div class="cr" data-auto><div class="lab">Buyer fee<small>on top of the ticket</small></div><div class="c tz"><b class="fee">10%</b></div><div class="c"><span class="fee">Tiered</span></div><div class="c"><span class="fee">Varies</span></div><div class="c"><span class="fee">~10–35%*</span></div><div class="c"><span class="fee">Varies</span></div><div class="c"><span class="fee">~10–15%*</span></div><div class="c"><span class="fee">$0, no protection</span></div></div>
+    </div>
+    <p class="cmpnote">From each company's public pages and app listings, Nov 2026. Guarantee: refund or replacement after a problem. Escrow: the seller isn't paid until the ticket arrives. *Third-party estimates.</p>
+    <span data-build="1"></span>
   </section>
 
   <!-- 12 -->
@@ -640,7 +663,7 @@
     // blinds: bars drop in on the beat, the slide swaps behind them, and they lift away on the same beat
     blinds: function(from, to){
       var N = 10, bars = [], gold = to.hasAttribute('data-gold'), i;
-      for (i = 0; i < N; i++){ var b = document.createElement('div'); b.className = 'bar' + ((gold ? i % 2 === 0 : i % 4 === 3) ? ' g' : ''); b.style.left = (i * 128) + 'px'; b.style.width = '129px'; fx.appendChild(b); bars.push(b); }
+      for (i = 0; i < N; i++){ var b = document.createElement('div'); b.className = 'blind' + ((gold ? i % 2 === 0 : i % 4 === 3) ? ' g' : ''); b.style.left = (i * 128) + 'px'; b.style.width = '129px'; fx.appendChild(b); bars.push(b); }
       to.style.visibility = 'hidden';
       var ins = bars.map(function(b, i){ return b.animate([{ transform:'scaleY(0)', transformOrigin:'top' }, { transform:'scaleY(1)', transformOrigin:'top' }], { duration:BEAT * 4, delay:i * BEAT * .5, easing:EASE, fill:'forwards' }); });
       return done(ins[N - 1]).then(function(){
@@ -725,6 +748,19 @@
           dot.animate([{ transform:'scale(1)' }, { transform:'scale(1.18)', offset:.4 }, { transform:'scale(1)' }], { duration:BEAT * 5, delay:BEAT * 4, easing:OUT });
           if (at === 2) dot.animate([{ boxShadow:'0 0 0 0 rgba(153,0,0,.5)' }, { boxShadow:'0 0 0 24px rgba(153,0,0,0)' }], { duration:BEAT * 8, delay:BEAT * 5, iterations:2 });
         }
+      }
+    },
+    cmp: {
+      // the AI rows light up on the click: they are what only Teezy does
+      step: function(s, n, animate){
+        s.classList.toggle('lit', n >= 1);
+        if (n >= 1 && animate && !calm) [].slice.call(s.querySelectorAll('.cr')).slice(4, 7).forEach(function(r, i){
+          r.querySelector('.c.tz').animate([{ transform:'scale(1)' }, { transform:'scale(1.25)', offset:.4 }, { transform:'scale(1)' }], { duration:BEAT * 5, delay:i * BEAT * 1.5, easing:OUT });
+        });
+      },
+      landed: function(s){
+        if (calm) return;
+        s.querySelector('.tzglow').animate([{ transform:'scaleY(.2)', opacity:0 }, { transform:'scaleY(1.03)', opacity:1, offset:.7 }, { transform:'scaleY(1)', opacity:1 }], { duration:BEAT * 6, easing:OUT });
       }
     },
     live: {
