@@ -233,6 +233,10 @@ window.installTeezyBackend = function (ui) {
         await refresh();
         if (orders.some(function (o) { return o.id === orderId; })) S.overlay = { k: 'order', id: orderId }; else ui.toast('That order belongs to a different account.');
         history.replaceState(null, '', location.pathname);
+      } else if (params.get('event') && EV[params.get('event')]) {
+        // Links posted back in the group chat open the event page.
+        S.tab = 'home'; S.stack = [{ v: 'event', ev: params.get('event'), qty: Number(params.get('qty')) || 1 }];
+        history.replaceState(null, '', location.pathname);
       } else if (params.get('seller')) {
         S.overlay = { k: 'payouts' }; history.replaceState(null, '', location.pathname);
       }
@@ -352,7 +356,18 @@ window.installTeezyBackend = function (ui) {
     sales.forEach(function (o) { o.fills.filter(function (f) { return ['held', 'transferred', 'confirmed'].indexOf(f.escrowStatus) >= 0 || f.problemReportedAt || (!f.hasProof && f.escrowStatus === 'released'); }).forEach(function (f) { content += saleCard(o, f); }); });
     return shell('Dashboard', content + button('Refresh account', 'reload', '', true));
   };
-  V.inbox = function () { return me ? shell('Inbox', brokerOffers.map(offerCard).join('') + (notifications.length ? notifications.map(function (n) { return '<div class="card"><span class="lt">' + esc(n.title) + '</span>' + note(n.body) + '</div>'; }).join('') : empty('No notifications yet. Transfer updates appear in My Tickets.'))) : accountPrompt('Inbox'); };
+  function notificationCard(n) {
+    var ev = n.data && n.data.eventId && EV[n.data.eventId] ? n.data.eventId : null;
+    var inner = '<span class="lt">' + esc(n.title) + '</span>' + note(n.body);
+    return ev ? '<button class="card tap" style="text-align:left" data-act="alertevent" data-ev="' + esc(ev) + '" data-qty="' + (Number(n.data.qty) || 1) + '">' + inner + '</button>' : '<div class="card">' + inner + '</div>';
+  }
+  A.alertevent = function (d) { S.tab = 'home'; S.stack = [{ v: 'event', ev: d.ev, qty: Number(d.qty) || 1 }]; S.overlay = null; render(true); };
+  V.inbox = function () {
+    if (!me) return accountPrompt('Inbox');
+    // Broker offers have their own cards with answer buttons, so their notifications aren't repeated.
+    var list = notifications.filter(function (n) { return !(n.kind === 'broker' && n.data && n.data.offerId); });
+    return shell('Inbox', brokerOffers.map(offerCard).join('') + (list.length ? list.map(notificationCard).join('') : brokerOffers.length ? '' : empty('No notifications yet. Transfer updates appear in My Tickets.')));
+  };
   V.saved = function () { return shell('Saved', desired.length ? desired.map(function (d) { return '<div class="card"><span class="lt">' + esc(eventName(d.eventId)) + '</span>' + note('Saved ticket alert · ' + money(d.maxPriceCents / 100) + ' maximum') + '</div>'; }).join('') : empty('No saved ticket alerts. Offers and chat are coming in a later step.')); };
   ['friends', 'album', 'org'].forEach(function (name) { V[name] = function () { return shell(name === 'org' ? 'Organizations' : name[0].toUpperCase() + name.slice(1), note('This feature is coming after the ticket marketplace.') + button('Back', 'back', '', true)); }; });
   V.calendar = function () { return shell('Your events', S.tickets.length ? S.tickets.map(function (t) { return '<div class="card"><span class="lt">' + esc(eventName(t.ev)) + '</span>' + note(EV[t.ev].date + ' · ' + EV[t.ev].time) + '</div>'; }).join('') : empty('Your purchased events will appear here.')); };
