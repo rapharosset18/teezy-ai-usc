@@ -68,10 +68,10 @@ claude, anthropic-api, node.js, fastify, postgresql, stripe, stripe-connect, jav
 
 ## Links
 
-- Prototype: [hosted link]
-- GitHub: [repo link]
+- Prototype: https://teezy-ai-usc-production.up.railway.app (vision build: /?demo)
+- GitHub: https://github.com/rapharosset18/teezy-ai-usc
 - Video: [video link]
-- Deck: [deck link or PDF]
+- Deck: https://teezy-ai-usc-production.up.railway.app/deck/ (PDF in the repo: deck/teezy-deck-mock.pdf)
 
 ## Team
 

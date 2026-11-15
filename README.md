@@ -4,8 +4,9 @@
 
 On Oct 28, 2026, USC's Department of Public Safety emailed every student about rising football-ticket fraud on GroupMe: sellers who take the money and never transfer, fake "your payment didn't go through" requests, and stolen USC ID photos. Teezy is a USC-only ticket exchange that is safe by design: every student is verified by USC email, there is no chat with strangers, the money is held on Stripe until the ticket arrives, and AI checks every listing and every transfer.
 
-- **Live prototype:** _add the hosted link here_
-- **Pitch deck:** `/deck/` on the hosted link, or `deck/teezy-deck-mock.pdf`
+- **Live prototype:** https://teezy-ai-usc-production.up.railway.app (sign in with any USC email; the code shows on screen)
+- **Vision build:** https://teezy-ai-usc-production.up.railway.app/?demo
+- **Pitch deck:** https://teezy-ai-usc-production.up.railway.app/deck/ (or `deck/teezy-deck-mock.pdf`)
 - **Video:** _add the link here_
 
 ## What the AI does
