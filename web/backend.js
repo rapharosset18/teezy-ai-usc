@@ -7,23 +7,23 @@ window.installTeezyBackend = function (ui) {
   var orders = [], sales = [], notifications = [], desired = [], catalog = [];
   var sellerPayments = { ready: false }, transactions = { payments: [], transfers: [] };
   var login = { email: '', code: '', sent: false, hint: '' }, stream;
-  /* ---------- AI@USC: TZ broker (paste your post), offers, AI transfer check ---------- */
+  /* ---------- AI@USC: Teezy broker (paste your post), offers, AI transfer check ---------- */
   var broker = { text: '', result: null, done: null }, brokerOffers = [], aiStatus = {};
   var SAMPLES = [
     ['Seller post', 'Selling my Ohio State student ticket, want 70, would take 55 if it goes today'],
     ['Buyer ISO', 'ISO 1 Ohio State ticket, can do 60 max, need it by Friday'],
     ['Scam DM', 'hey saw ur ISO. got 2 ohio state tix $40 each, zelle me first and ill transfer right after. need them gone asap']
   ];
-  var SIGNAL_NAMES = { off_platform_payment: 'Payment outside TZ', payment_before_transfer: 'Pay before transfer', urgency_pressure: 'Pressure to hurry',
+  var SIGNAL_NAMES = { off_platform_payment: 'Payment outside Teezy', payment_before_transfer: 'Pay before transfer', urgency_pressure: 'Pressure to hurry',
     price_too_good: 'Price too good to be true', above_face_value: 'Above face value', suspicious_link: 'Link in the message',
     personal_info_request: 'Asks for login or codes', impersonation: 'Claims to be USC', other: 'Other warning sign' };
   function brokerCard() {
-    var stats = aiStatus.posts ? '<span class="ls">' + aiStatus.posts + ' posts checked · ' + aiStatus.flagged + ' flagged</span>' : '<span class="ls">Paste a GroupMe post or a DM. TZ checks it for scams and makes it a protected trade.</span>';
-    return '<button class="card tap tz-broker" data-act="broker"><span class="tz-spark" aria-hidden="true">AI</span><span class="grow"><span class="lt">TZ broker</span>' + stats + '</span>' + (ui.I && ui.I.chev ? ui.I.chev : '') + '</button>' +
+    var stats = aiStatus.posts ? '<span class="ls">' + aiStatus.posts + ' posts checked · ' + aiStatus.flagged + ' flagged</span>' : '<span class="ls">Paste a GroupMe post or a DM. Teezy checks it for scams and makes it a protected trade.</span>';
+    return '<button class="card tap tz-broker" data-act="broker"><span class="tz-spark" aria-hidden="true">AI</span><span class="grow"><span class="lt">Teezy broker</span>' + stats + '</span>' + (ui.I && ui.I.chev ? ui.I.chev : '') + '</button>' +
       (brokerOffers.some(function (o) { return o.status === 'open' && o.myAnswer == null; }) ? '<button class="card tap tz-offer" data-act="tab" data-t="inbox"><span class="lt">The broker has an offer for you</span><span class="ls">Open your inbox to answer it</span></button>' : '');
   }
   function signalList(r) {
-    if (!r.scamSignals.length) return '<div class="tz-ok"><b>No scam signs found.</b> Still, only ever pay inside TZ: your money is held until the ticket is in your account.</div>';
+    if (!r.scamSignals.length) return '<div class="tz-ok"><b>No scam signs found.</b> Still, only ever pay inside Teezy: your money is held until the ticket is in your account.</div>';
     return '<div class="tz-warn" role="alert"><b>' + (r.scamRisk === 'high' ? 'High scam risk' : 'Possible scam') + '</b><ul>' +
       r.scamSignals.map(function (s) { return '<li><span class="tz-chip">' + esc(SIGNAL_NAMES[s.type] || s.type) + '</span> “' + esc(s.quote) + '”<br><span>' + esc(s.why) + '</span></li>'; }).join('') +
       '</ul></div>';
@@ -33,17 +33,17 @@ window.installTeezyBackend = function (ui) {
   }
   function brokerResult(r) {
     var sell = r.intent === 'sell', buy = r.intent === 'buy';
-    var head = '<div class="between"><span class="lt">' + esc(r.summary || 'Here is what TZ read') + '</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>';
+    var head = '<div class="between"><span class="lt">' + esc(r.summary || 'Here is what Teezy read') + '</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>';
     if (!sell && !buy) {
-      return head + signalList(r) + note(r.clarifyingQuestion || 'TZ could not tell if this is a sale or a request. Add “selling” or “ISO” and try again.') +
-        (r.scamRisk !== 'low' ? note('If someone sent you this, don’t pay them. Find a protected ticket on TZ instead.') : '') + button('Try another message', 'brokeragain', '', true);
+      return head + signalList(r) + note(r.clarifyingQuestion || 'Teezy could not tell if this is a sale or a request. Add “selling” or “ISO” and try again.') +
+        (r.scamRisk !== 'low' ? note('If someone sent you this, don’t pay them. Find a protected ticket on Teezy instead.') : '') + button('Try another message', 'brokeragain', '', true);
     }
     var received = r.messageKind === 'received';
     if (received) head = '<div class="between"><span class="lt">A message someone sent you</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>' + note(r.summary);
     var price = received ? '' : sell ? r.publicPrice : (r.privateLimit || r.publicPrice);
     var limit = sell ? (r.privateLimit || '') : '';
     return head + signalList(r) +
-      (received && r.scamRisk !== 'low' ? '<div class="tz-warn"><b>Don’t pay this person directly.</b> Ask them to list on TZ, or get the same ticket here with your money held until it’s in your account.</div>' : '') +
+      (received && r.scamRisk !== 'low' ? '<div class="tz-warn"><b>Don’t pay this person directly.</b> Ask them to list on Teezy, or get the same ticket here with your money held until it’s in your account.</div>' : '') +
       (r.clarifyingQuestion && !received ? note(r.clarifyingQuestion) : '') +
       '<form data-backend="aisubmit" class="stack">' +
       '<input type="hidden" name="intent" value="' + r.intent + '">' +
@@ -53,7 +53,7 @@ window.installTeezyBackend = function (ui) {
       (sell ? '<label class="stack" style="gap:6px"><span>Lowest you’ll take ($) <span class="tz-lock">Private</span></span><input class="field" name="floor" type="number" min="1" step="1" value="' + esc(limit) + '"></label>' +
         note('Buyers never see this. The broker uses it to close deals for you, never below it.') :
         note('Your max stays private. The broker finds the lowest price that works.')) +
-      (r.event ? note('Face value for this event: $' + r.event.faceValue + '. TZ caps student resale at face value.') : '') +
+      (r.event ? note('Face value for this event: $' + r.event.faceValue + '. Teezy caps student resale at face value.') : '') +
       '<p id="backend-error" class="sub" role="alert"></p>' + submit(received && buy ? 'Find this ticket safely' : sell ? 'List with protection' : 'Find me a ticket') + '</form>';
   }
   function brokerDone(d) {
@@ -65,7 +65,7 @@ window.installTeezyBackend = function (ui) {
     };
     var share = d.listing ? location.origin + '/?event=' + encodeURIComponent(d.listing.eventId) : '';
     return '<div class="tz-ok"><b>' + (d.listing ? 'Listed with protection' : 'Request saved') + '</b><br>' + esc(lines[b.outcome] || lines.waiting) + '</div>' +
-      (share ? '<label class="stack" style="gap:6px">Post this back in the group chat<textarea class="field tz-share" readonly rows="3">' + esc('Selling on TZ for Trojans. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
+      (share ? '<label class="stack" style="gap:6px">Post this back in the group chat<textarea class="field tz-share" readonly rows="3">' + esc('Selling on Teezy. Pay there and your money is held until you have the ticket: ' + share) + '</textarea></label>' + button('Copy message', 'brokercopy') : '') +
       (b.outcome === 'available' && d.desired ? button('See tickets', 'event', 'data-ev="' + esc(d.desired.eventId) + '"') : '') +
       (b.outcome === 'offer' ? button('Open inbox', 'brokerinbox') : '') + button('Paste another post', 'brokeragain', '', true);
   }
@@ -73,12 +73,12 @@ window.installTeezyBackend = function (ui) {
     var body;
     if (broker.done) body = brokerDone(broker.done);
     else if (broker.result) body = brokerResult(broker.result);
-    else body = note('Paste the message you’d post in the GroupMe, or a DM someone sent you. TZ reads it, checks it for scams, and turns it into a protected trade.') +
+    else body = note('Paste the message you’d post in the GroupMe, or a DM someone sent you. Teezy reads it, checks it for scams, and turns it into a protected trade.') +
       '<form data-backend="readpost" class="stack"><textarea class="field tz-paste" name="text" rows="4" maxlength="2000" placeholder="Selling my UCLA ticket, want 70, would take 55 if it goes today" required>' + esc(broker.text) + '</textarea>' +
       '<div class="tz-samples">' + SAMPLES.map(function (s, i) { return '<button type="button" class="chip" data-act="brokersample" data-i="' + i + '">' + esc(s[0]) + '</button>'; }).join('') + '</div>' +
       '<p id="backend-error" class="sub" role="alert"></p>' + submit('Read my post') + '</form>' +
       note('AI proposes, code decides: the AI reads your words, but prices, matches and payouts are set by fixed rules.');
-    return panel('TZ broker', body);
+    return panel('Teezy broker', body);
   };
   A.broker = function () { if (!signedIn()) return; broker = { text: '', result: null, done: null }; ui.sheet({ k: 'broker' }); };
   A.brokersample = function (d) { broker.text = SAMPLES[+d.i][1]; var t = document.querySelector('.tz-paste'); if (t) t.value = broker.text; else ui.sheet({ k: 'broker' }); };
@@ -90,7 +90,7 @@ window.installTeezyBackend = function (ui) {
     ui.toast(o.status === 'accepted' ? 'Deal agreed at ' + money(o.priceCents / 100) + '. ' + (o.side === 'buy' ? 'Tap the alert to pay.' : 'The buyer is paying now.') : o.status === 'declined' ? 'Offer declined. Your listing stays as it was.' : 'Got it. Waiting on the other side.');
   }); };
   function offerCard(o) {
-    return '<div class="card tz-offer"><span class="lt">TZ broker · ' + esc(o.eventName) + '</span>' + note(o.message) +
+    return '<div class="card tz-offer"><span class="lt">Teezy broker · ' + esc(o.eventName) + '</span>' + note(o.message) +
       (o.status === 'open' && o.myAnswer == null ? '<div class="btn-grid">' + button('Meet at ' + money(o.priceCents / 100), 'offeranswer', 'data-id="' + o.id + '" data-yes="1"') + button('No thanks', 'offeranswer', 'data-id="' + o.id + '" data-yes="0"', true) + '</div>' :
         note(o.status === 'accepted' ? 'Both agreed at ' + money(o.priceCents / 100) + '.' : o.status === 'declined' ? 'Declined.' : o.status === 'closed' ? 'No longer available.' : 'You said yes. Waiting on the other side.')) + '</div>';
   }

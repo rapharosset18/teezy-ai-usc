@@ -4,11 +4,11 @@ import { badRequest, conflict, notFound, forbidden, requireInt } from '../errors
 import { paymentRuntime } from './stripe.js';
 import { alertTrigger } from '../engine/rules.js';
 
-// TZ for Trojans: student resale is capped at face value.
+// Teezy: student resale is capped at face value.
 export async function checkFaceValue(eventId, cents, what = 'price') {
   const { rows: [e] } = await query('SELECT face_value_cents FROM events WHERE id = $1', [eventId]);
   if (e?.face_value_cents && cents > e.face_value_cents) {
-    throw badRequest(`TZ caps student resale at the $${e.face_value_cents / 100} face value; lower your ${what}`);
+    throw badRequest(`Teezy caps student resale at the $${e.face_value_cents / 100} face value; lower your ${what}`);
   }
 }
 

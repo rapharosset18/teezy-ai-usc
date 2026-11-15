@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
-<!-- TZ for Trojans (AI@USC hackathon build). Edit this file directly; prototype/ is the pre-hackathon source and is not synced. -->
+<!-- Teezy (AI@USC hackathon build). Edit this file directly; prototype/ is the pre-hackathon source and is not synced. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TZ for Trojans</title>
+<title>Teezy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
 <style>
   /* Layout: a phone-sized app, framed on wide screens and full-bleed on phones.
      Look: Swoosh. Archivo, neon orange on near-black, hairline borders, uppercase micro-labels. */
-  /* TZ for Trojans (hackathon build). Palette D: cardinal and gold for the brand,
+  /* Teezy (hackathon build). Palette D: cardinal and gold for the brand,
      green only ever means "protected", amber for scam warnings. Light by default. */
   :root{
     --bg:#FFFFFF;
@@ -755,7 +755,7 @@
   @media (max-width:520px){ .push{ top:calc(8px + env(safe-area-inset-top, 0px)); } }
   @media (prefers-reduced-motion: reduce){ .sheet, .drawer{ animation:none; } .push, .push.show, .toast{ transition:none; } .typing i{ animation:none; opacity:.7; } }
 
-  /* AI@USC: TZ broker */
+  /* AI@USC: Teezy broker */
   .card.tz-broker{ display:flex; flex-direction:row; align-items:center; gap:12px; background:var(--gold-wash); border-color:var(--gold); text-align:left; }
   .tz-broker .ls{ color:var(--gold-text); }
   .tz-spark{ flex:none; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); font-weight:800; font-size:.85rem; letter-spacing:.02em; }
@@ -773,8 +773,8 @@
 </style>
 
 <div class="intro">
-  <div class="word">TZ<i></i></div>
-  <p>The full TZ flow in the Swoosh look. Buy, haggle, sell and plan with friends. Everything is clickable; the demo resets when you reload.</p>
+  <div class="word">teezy<i></i></div>
+  <p>The full Teezy flow in the Swoosh look. Buy, haggle, sell and plan with friends. Everything is clickable; the demo resets when you reload.</p>
 </div>
 <div class="phone">
   <div class="screen" id="screen">
@@ -871,7 +871,7 @@ var PEOPLE = {
   'Maya R.':'#0A6542', 'Jordan K.':'#2B3A80', 'Alex T.':'#4A3B2A', 'Chris P.':'#3E4A5C', 'Priya S.':'#7A2738', 'Sam W.':'#2F4A3C', 'Dev M.':'#6B5B95',
   'Kai L.':'#1F2A44', 'Rosa D.':'#8A5A2B', 'Ana':'#7A2738', 'Marcus T.':'#2B3A80', 'Ivy C.':'#4A3B2A', 'Nico':'#4A3B2A', 'Lena V.':'#2F4A3C',
   'Grant P.':'#3E4A5C', 'Bella M.':'#6B2D3A', 'Owen F.':'#1F2A44', 'Zoe K.':'#6B5B95', 'Ravi S.':'#0A6542', 'Theo':'#2B3A80', 'Cam B.':'#8A5A2B',
-  'Mina J.':'#7A2738', 'Leo':'#2F4A3C', 'Theo Park':'#2B3A80', 'Dev Mehta':'#6B5B95', 'Cardinal Dance Co.':'#6B2D3A', 'TZ':'#0E0E10', 'Sam':'#2F4A3C'
+  'Mina J.':'#7A2738', 'Leo':'#2F4A3C', 'Theo Park':'#2B3A80', 'Dev Mehta':'#6B5B95', 'Cardinal Dance Co.':'#6B2D3A', 'Teezy':'#0E0E10', 'Sam':'#2F4A3C'
 };
 var FRIENDS = ['Ana', 'Nico', 'Theo'];
 
@@ -946,10 +946,10 @@ S.threads = [
   T('theo', 'Theo', 'Friends', [{ text:'You coming to DG Saturday?' }], true, '1h'),
   T('jordan', 'Jordan K.', 'Offers', [{ me:1, offer:35 }, { text:'Can you do $35? I mean I can do 40 tops.' }], false, '3h'),
   T('ana', 'Ana', 'Friends', [{ sys:'Yesterday' }, { text:'are you going to the showcase??' }, { me:1, text:'yes but no ticket yet 😭' }, { sys:'Today · 2:14 PM' }, { text:'Saving you a showcase ticket for $25' }, { ticket:'ana' }], true, '5h'),
-  T('sigep', 'Cardinal Dance Co.', 'Tickets', [{ text:'Fall Showcase tickets are on TZ. Members can buy theirs until Friday.' }], false, 'Mon'),
+  T('sigep', 'Cardinal Dance Co.', 'Tickets', [{ text:'Fall Showcase tickets are on Teezy. Members can buy theirs until Friday.' }], false, 'Mon'),
   T('chris', 'Chris P.', 'Tickets', [{ text:'Sent the transfer' }, { sys:'Arizona tickets confirmed in your account' }], false, 'Tue'),
   T('nico', 'Nico', 'Friends', [{ text:'Photos from Arizona are up' }], false, 'Oct 18'),
-  T('teezy', 'TZ', 'TZ', [{ text:'Your Fall Showcase ticket from Ivy C. is in your account. Payment stays held until you scan in.' }], false, 'Oct 30')
+  T('teezy', 'Teezy', 'Teezy', [{ text:'Your Fall Showcase ticket from Ivy C. is in your account. Payment stays held until you scan in.' }], false, 'Oct 30')
 ];
 
 // Which event each conversation is about, so the Inbox can group them.
@@ -963,7 +963,7 @@ S.activity = [
   { type:'Sales', ic:'SOLD', t:'Sold 1 ticket to Sam', s:'USC vs Arizona · ready', amt:40, date:'Oct 17' },
   { type:'Purchases', ic:'BUY', t:'2 tickets from Chris P.', s:'USC vs Arizona · scanned in', amt:-96, date:'Oct 15' },
   { type:'Payouts', ic:'OUT', t:'Cashed out to Chase ••4417', s:'arrived Oct 13', amt:-96, date:'Oct 12' },
-  { type:'Sales', ic:'CR', t:'Referral credit', s:'Theo joined TZ', amt:5, date:'Oct 10' }
+  { type:'Sales', ic:'CR', t:'Referral credit', s:'Theo joined Teezy', amt:5, date:'Oct 10' }
 ];
 
 var FRIEND_PLANS = [
@@ -1731,7 +1731,7 @@ V.event = function(p){
     '<div class="stack" style="gap:0"><div class="between"><h2 class="h2">Seats</h2><span class="ls" style="margin:0">' + plural(fit.length, 'listing') + (qty > 1 ? ' · ' + qty + '+ together' : '') + '</span></div><div class="list">' +
       fit.map(function(l){ var ok = l.price <= p.offer; return '<button class="lrow two' + (ok ? '' : ' dim') + '" data-act="seatsheet" data-id="' + l.id + '"><span><span class="lt">' + esc(seatLabel(l)) + (ok ? '<span class="okpill">In range</span>' : '') + '</span><span class="ls">' + (l.seats === 1 ? '1 seat' : l.seats + ' together') + ' · ' + esc(l.seller) + '</span></span><span class="price">$' + l.price + '<small class="tag">' + esc(l.tag) + '</small></span></button>'; }).join('') +
       (fit.length ? '' : '<p class="empty">No listings with ' + qty + ' seats together.</p>') + '</div></div>' +
-    '<div class="shield">' + I.shield + '<span>Verified students only. TZ holds your payment and the seller is paid after you scan in.</span></div></div>';
+    '<div class="shield">' + I.shield + '<span>Verified students only. Teezy holds your payment and the seller is paid after you scan in.</span></div></div>';
   var reach = fit.length - hit.length;
   h += '<div class="foot">' +
     (hit.length ? '<button class="btn btn-primary btn-full" data-act="checkout" data-id="' + hit[0].id + '" data-qty="' + qty + '">Buy ' + qty + ' · $' + hit[0].price * qty + ' · ' + esc(hit[0].sec.replace('Section ', 'Sec ')) + '</button>'
@@ -1882,7 +1882,7 @@ function passFront(w){
     h += '<span class="wtag hot">' + (days <= 0 ? 'Today' : 'In ' + plural(days, 'day')) + '</span>' +
       '<div style="margin-top:auto"><div class="wt">' + esc(e.name) + '</div><div class="ws">' + e.date + ' · ' + e.time + ' · ' + esc(e.venue) + '</div></div>' +
       '<div class="wgrid"><div><span>Section</span><b>' + esc(t.sec.replace('Section ', '').replace('General admission', 'GA')) + '</b></div><div><span>Row</span><b>' + esc(t.row ? t.row.replace('Row ', '') : '–') + '</b></div><div><span>Seats</span><b>' + esc(t.seats) + '</b></div></div>' +
-      '<div class="wfoot"><span class="wqr" aria-hidden="true">' + qrSvg(t.id + '-0') + '</span><span class="grow"><span class="lt">' + plural(t.qty, 'ticket') + ' · scan at the gate</span><span class="ls">' + (t.status === 'held' ? money(t.paid) + ' held by TZ until you scan in' : 'Ready') + '</span></span></div>' +
+      '<div class="wfoot"><span class="wqr" aria-hidden="true">' + qrSvg(t.id + '-0') + '</span><span class="grow"><span class="lt">' + plural(t.qty, 'ticket') + ' · scan at the gate</span><span class="ls">' + (t.status === 'held' ? money(t.paid) + ' held by Teezy until you scan in' : 'Ready') + '</span></span></div>' +
       '<div class="wacts"><button data-act="sellticket" data-id="' + t.id + '">Sell</button><button data-act="transfer" data-id="' + t.id + '">Transfer</button><button class="main" data-act="showticket" data-id="' + t.id + '">Show ticket</button></div>';
   } else if (w.kind === 'sell'){
     var x = w.s;
@@ -2066,10 +2066,10 @@ V.inbox = function(){
 V.evinbox = function(p){
   var key = p.ev, e = key !== 'other' && EV[key];
   var list = S.threads.filter(function(t){ return (t.ev || 'other') === key; });
-  var kinds = ['All'].concat(['Offers', 'Friends', 'Tickets', 'TZ'].filter(function(k){ return list.some(function(t){ return t.kind === k; }); }));
+  var kinds = ['All'].concat(['Offers', 'Friends', 'Tickets', 'Teezy'].filter(function(k){ return list.some(function(t){ return t.kind === k; }); }));
   var tabk = kinds.indexOf(p.tab) === -1 ? 'All' : p.tab, shown = list.filter(function(t){ return tabk === 'All' || t.kind === tabk; });
   var acts = e ? actionCards(key) : [];
-  return '<div class="hd line"><div class="row"><button class="backbtn" data-act="back" aria-label="Back">' + I.back + '</button><span class="grow"><span class="lt">' + esc(e ? e.name : 'Clubs and updates') + '</span><span class="ls">' + (e ? e.date + ' · ' + esc(e.venue) : 'Organizations and TZ') + '</span></span>' + (e && !e.past ? '<button class="link" data-act="event" data-ev="' + key + '">Event</button>' : '') + '</div></div>' +
+  return '<div class="hd line"><div class="row"><button class="backbtn" data-act="back" aria-label="Back">' + I.back + '</button><span class="grow"><span class="lt">' + esc(e ? e.name : 'Clubs and updates') + '</span><span class="ls">' + (e ? e.date + ' · ' + esc(e.venue) : 'Organizations and Teezy') + '</span></span>' + (e && !e.past ? '<button class="link" data-act="event" data-ev="' + key + '">Event</button>' : '') + '</div></div>' +
     '<div class="body">' +
       '<div class="people" aria-label="People">' + list.map(function(t){ return '<button data-act="thread" data-id="' + t.id + '">' + av(t.name) + (t.unread ? '<span class="u" aria-label="New"></span>' : '') + esc(nm(t.name.split(' ')[0])) + '</button>'; }).join('') + '</div>' +
       (acts.length ? '<div class="acts-row erow" id="row-acts-ev">' + acts.join('') + '</div>' : '') +
@@ -2149,15 +2149,15 @@ function dealCard(t, d, p){
     '</section>';
 }
 var ASK = {
-  buy:[['Can I see the seat view?', 'Row is right on the 50, full view of the field.'], ['Are the seats together?', 'Yes, side by side.'], ['When will you transfer?', 'Right after you pay. TZ sends them to your account.']],
+  buy:[['Can I see the seat view?', 'Row is right on the 50, full view of the field.'], ['Are the seats together?', 'Yes, side by side.'], ['When will you transfer?', 'Right after you pay. Teezy sends them to your account.']],
   sell:[['Can you pay today?', 'Yes, as soon as we agree.'], ['Do you need them together?', 'Together would be great.'], ['Is your price firm?', 'I can move a little.']]
 };
-// A ticket a friend is holding for you, inside the chat: Buy goes through normal checkout (TZ holds
+// A ticket a friend is holding for you, inside the chat: Buy goes through normal checkout (Teezy holds
 // the money), Counter sends your price and they answer.
 function friendTicket(t, m){
   var l = listing('l-' + m.ticket), first = esc(nm(t.name.split(' ')[0]));
   var mine = S.tickets.filter(function(x){ return x.from === t.name && (!l || x.ev === l.ev); })[0];
-  if (!l && mine){ var e2 = EV[mine.ev]; return '<div class="fticket done"><div class="row"><span class="ftpost" style="' + thumb(e2) + '"></span><span class="grow"><span class="lt">You bought it · ' + money(mine.paid) + '</span><span class="ls">' + first + ' sends it to your account · TZ holds your money until you scan in</span></span>' + I.check + '</div></div>'; }
+  if (!l && mine){ var e2 = EV[mine.ev]; return '<div class="fticket done"><div class="row"><span class="ftpost" style="' + thumb(e2) + '"></span><span class="grow"><span class="lt">You bought it · ' + money(mine.paid) + '</span><span class="ls">' + first + ' sends it to your account · Teezy holds your money until you scan in</span></span>' + I.check + '</div></div>'; }
   if (!l) return '<div class="fticket"><span class="ls">' + first + '\'s ticket isn\'t available anymore.</span></div>';
   var e = EV[l.ev], others = S.listings.filter(function(x){ return x.ev === l.ev && x !== l; }).map(function(x){ return x.price; }), low = others.length ? Math.min.apply(null, others) : null;
   return '<div class="fticket"><div class="row"><span class="ftpost" style="' + thumb(e) + '"></span><span class="grow"><span class="lt">' + esc(e.name) + '</span><span class="ls">' + e.date + ' · ' + esc(l.sec.replace('General admission', 'GA')) + ' · ' + plural(l.seats, 'ticket') + '</span></span><span class="price">$' + l.price + '</span></div>' +
@@ -2167,11 +2167,11 @@ function friendTicket(t, m){
 V.chat = function(p){
   var t = thread(p.id);
   t.unread = false;
-  var org = t.name === 'TZ' || t.name === 'Cardinal Dance Co.', friend = isFriend(t.name), d = org ? null : dealFor(t), first = esc(nm(t.name.split(' ')[0]));
-  var head = '<div class="hd line"><div class="row"><button class="backbtn" data-act="back" aria-label="Back">' + I.back + '</button>' + av(t.name, 'sm') + '<span class="grow"><span class="lt">' + esc(t.name) + '</span><span class="ls">' + (t.name === 'TZ' ? 'Updates and receipts' : t.name === 'Cardinal Dance Co.' ? 'Verified organization' : (friend ? (t.ev && EV[t.ev] ? '<button class="evchip" data-act="event" data-ev="' + t.ev + '"><i></i>' + esc(EV[t.ev].name) + ' · ' + EV[t.ev].date.split(',')[0] + '</button>' : 'Friend · USC verified') : 'USC verified · not a friend')) + '</span></span>' +
+  var org = t.name === 'Teezy' || t.name === 'Cardinal Dance Co.', friend = isFriend(t.name), d = org ? null : dealFor(t), first = esc(nm(t.name.split(' ')[0]));
+  var head = '<div class="hd line"><div class="row"><button class="backbtn" data-act="back" aria-label="Back">' + I.back + '</button>' + av(t.name, 'sm') + '<span class="grow"><span class="lt">' + esc(t.name) + '</span><span class="ls">' + (t.name === 'Teezy' ? 'Updates and receipts' : t.name === 'Cardinal Dance Co.' ? 'Verified organization' : (friend ? (t.ev && EV[t.ev] ? '<button class="evchip" data-act="event" data-ev="' + t.ev + '"><i></i>' + esc(EV[t.ev].name) + ' · ' + EV[t.ev].date.split(',')[0] + '</button>' : 'Friend · USC verified') : 'USC verified · not a friend')) + '</span></span>' +
       (!org && !friend ? '<span class="protect">' + I.shield + 'Protected</span>' : '') +
       (!org ? '<button class="iconbtn" data-act="report" aria-label="Report ' + first + '">' + I.flag + '</button>' : '') + '</div></div>';
-  var shield = d ? '<div class="shield">' + I.shield + '<span>' + (d.side === 'buy' ? 'You pay TZ, never the seller directly. Your money is held until you scan in.' : 'The buyer pays TZ first. You\'re paid after the game.') + '</span></div>' : '';
+  var shield = d ? '<div class="shield">' + I.shield + '<span>' + (d.side === 'buy' ? 'You pay Teezy, never the seller directly. Your money is held until you scan in.' : 'The buyer pays Teezy first. You\'re paid after the game.') + '</span></div>' : '';
   // Friends and organizations: normal chat (with the deal card on top when there is one).
   if (org || friend){
     return head + '<div class="body" id="chatbody">' + (d ? dealCard(t, d, p) : '') + '<div class="chat-log">' + t.msgs.map(function(m, k){
@@ -2420,7 +2420,7 @@ V.org = function(){
         (o.roster ? '<div class="row orgfile"><span class="ficon">PDF</span><span class="grow"><span class="lt">officer-roster.pdf</span><span class="ls">214 KB · we review it within 24 hours</span></span><button class="link" data-act="orgroster">Remove</button></div>'
           : '<button class="orgdrop" data-act="orgroster"><span class="lt">Choose a file</span><span class="ls">PDF or photo · it should list you as an officer</span></button>') + '</div>';
   } else if (step === 'pay'){
-    b = '<div class="stack" style="gap:6px"><h1 class="title">Where ticket money goes</h1><p class="sub">Payouts go to the org\'s account, never your personal one. TZ pays out after each event.</p></div>' +
+    b = '<div class="stack" style="gap:6px"><h1 class="title">Where ticket money goes</h1><p class="sub">Payouts go to the org\'s account, never your personal one. Teezy pays out after each event.</p></div>' +
       '<div class="stack orgbanks" style="gap:10px" role="group" aria-label="Bank">' + ORG_BANKS.map(function(x){ var on = o.bank === x[0]; return '<button class="card tap row' + (on ? ' on' : '') + '" data-act="orgbank" data-b="' + x[0] + '" aria-pressed="' + on + '"><span class="avatar" style="border-radius:10px;background:var(--surface-2);color:var(--ink)">' + x[0][0] + '</span><span class="grow"><span class="lt">' + x[0] + '</span><span class="ls">' + (on ? 'Connected · checking ' + x[1] : 'Sign in to connect') + '</span></span>' + (on ? '<span class="pill pill-trust">Connected</span>' : I.chev) + '</button>'; }).join('') + '</div>' +
       '<p class="ls" style="text-align:center">Bank sign-in is simulated in this demo.</p>';
   } else {
@@ -2450,13 +2450,13 @@ O.drawer = function(){
       '<button class="card lime tap row" data-act="invite"><span class="grow" style="font-size:.86rem;line-height:1.4"><b>Invite a friend, both get $5</b> off your next ticket.</span>' + I.chev + '</button>' +
     '</div>') + '</div></div>';
 };
-// What other students see before trading with you. The reviews are sample data until TZ has real ones.
+// What other students see before trading with you. The reviews are sample data until Teezy has real ones.
 function publicProfile(){
   var review = function(q, who){ return '<div class="prev"><b>“' + q + '”</b><span class="ls">' + who + '</span></div>'; };
   return '<div class="ptabc stack" style="gap:14px"><p class="ls" style="margin:0">What other students see before trading with you</p>' +
     '<div class="card" style="gap:14px"><div class="row"><span class="avatar" style="width:52px;height:52px;font-size:1.3rem;background:var(--accent);color:var(--accent-ink)">' + esc(myInitial()) + '</span><span class="grow"><span class="lt" style="font-size:1.1rem;font-weight:900">' + esc(shortName(S.profile.name)) + '</span>' + (S.profile.year ? '<span class="ls">Class of ' + esc(S.profile.year) + '</span>' : '') + '<span class="ls" style="color:var(--trust);display:flex;align-items:center;gap:4px">' + I.check + 'USC verified</span></span></div>' +
       '<div class="stats3 pubstats">' + (S.profile.showRating ? '<span><b>4.9</b><span>Rating</span></span>' : '') + '<span><b>14</b><span>Trades</span></span><span><b>~10 min</b><span>Replies in</span></span></div>' +
-      '<div class="pbadges"><span>On TZ since 2025</span><span>No cancelled sales</span><span>Fast transfers</span>' + S.profile.ints.map(function(c){ return '<span>Into ' + esc(c.toLowerCase()) + '</span>'; }).join('') + '</div>' +
+      '<div class="pbadges"><span>On Teezy since 2025</span><span>No cancelled sales</span><span>Fast transfers</span>' + S.profile.ints.map(function(c){ return '<span>Into ' + esc(c.toLowerCase()) + '</span>'; }).join('') + '</div>' +
       review('Sent the tickets right away.', 'Maya R. · USC vs Arizona') + review('Easy to deal with, fair price.', 'Kai L. · Sig Ep Fall Showcase') + '</div>' +
     '<button class="btn btn-ghost btn-full" data-act="go" data-v="editprofile">Edit profile</button></div>';
 }
@@ -2487,13 +2487,13 @@ O.checkout = function(o){
   var l = o.snap, e = EV[l.ev], qty = o.qty, total = l.price * qty, first = esc(nm(l.seller.split(' ')[0]));
   if (o.done) return '<button class="scrim" aria-hidden="true" tabindex="-1"></button><div class="sheet paydone" role="dialog" aria-label="Purchase complete"><div class="evhero" style="' + thumb(e) + '"' + (e.poster ? ' role="img" aria-label="' + esc(e.name) + ' poster"' : '') + '>' + (e.poster ? '' : esc(e.short)) + '</div>' +
     '<div class="in"><div><h2 class="title">You\'re in.</h2><p class="sub">' + esc(e.name) + ' · ' + e.date + ' · ' + e.time + '<br>' + esc(seatLabel(l)) + ' · ' + plural(qty, 'ticket') + '</p></div>' +
-    '<ol class="paysteps"><li class="on"><i>' + I.check + '</i>Paid · ' + money(total) + ' held by TZ</li><li><i></i>' + first + ' sends your tickets</li><li><i></i>You scan in</li><li><i></i>' + first + ' gets paid</li></ol>' +
+    '<ol class="paysteps"><li class="on"><i>' + I.check + '</i>Paid · ' + money(total) + ' held by Teezy</li><li><i></i>' + first + ' sends your tickets</li><li><i></i>You scan in</li><li><i></i>' + first + ' gets paid</li></ol>' +
     '<div class="btn-grid"><button class="btn btn-ghost" data-act="close">Keep browsing</button><button class="btn btn-primary" data-act="tickets" data-t="Upcoming">See ticket</button></div></div></div>';
   return '<button class="scrim" data-act="close" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Checkout"><span class="grab"></span>' +
     '<div class="row"><span class="cothumb" style="' + thumb(e) + '">' + (e.poster ? '' : esc(e.short)) + '</span><span class="grow"><span class="lt">' + esc(e.name) + '</span><span class="ls">' + e.date + ' · ' + e.time + '</span><span class="ls">' + esc(seatLabel(l)) + ' · ' + plural(qty, 'ticket') + '</span></span><span class="price" style="font-size:1.3rem">$' + total + (qty > 1 ? '<small>$' + l.price + ' each</small>' : '') + '</span></div>' +
     '<div class="row">' + av(l.seller, 'sm') + '<span class="grow"><span class="lt">' + esc(l.seller) + '</span><span class="ls">Verified USC · ' + l.trades + ' trades</span></span></div>' +
     '<button class="paypick" data-act="paymethod"><span><span class="ls">Pay with</span><b>' + esc(PAY_METHODS[S.payMethod != null ? S.payMethod : S.settings.pay]) + '</b></span><span class="ls" style="margin:0">Change ›</span></button>' +
-    '<div class="shield">' + I.shield + '<span>Held by TZ. ' + first + ' is paid only after you scan in. Refunded if the tickets fail. No buyer fees.</span></div>' +
+    '<div class="shield">' + I.shield + '<span>Held by Teezy. ' + first + ' is paid only after you scan in. Refunded if the tickets fail. No buyer fees.</span></div>' +
     '<div class="swpay" id="swpay"><span class="fill"></span><span class="lbl2">Slide to pay ' + money(total) + '</span><button class="knob" aria-label="Pay ' + money(total) + '. Slide right, or press Enter.">' + I.chev + '</button></div></div>';
 };
 // Only the knob drags, so a stray tap on the track can't pay.
@@ -2558,7 +2558,7 @@ O.ticket = function(o){
       '<span class="tf-face tf-front" style="' + thumb(e) + '"><b>' + esc(e.name) + '</b><small>' + e.date + ' · ' + e.time + ' · ' + esc(e.venue) + '</small><small>' + (sec === 'GA' ? 'General admission' : 'Section ' + esc(sec) + ', Row ' + esc(row) + ', Seat ' + esc(seat)) + '</small><em>Tap to show code</em></span>' +
       '<span class="tf-face tf-back"><b class="nm">' + esc(e.name) + '</b><span class="cols3"><span><span>Section</span><b>' + esc(sec) + '</b></span><span><span>Row</span><b>' + esc(row) + '</b></span><span><span>Seat</span><b>' + esc(seat) + '</b></span></span>' +
         '<span class="tcode" id="tcode">' + qrSvg(t.id + '-' + i + '-' + (o.n || 0)) + '</span><span class="tlive"><i></i></span><span class="tcap">Live code · refreshes in <span id="tcd">' + (o.left || 5) + '</span>s</span>' +
-        '<span class="tcap">When it scans, TZ releases ' + money(t.paid) + ' to ' + esc(nm(t.from)) + '</span></span></span></button>' +
+        '<span class="tcap">When it scans, Teezy releases ' + money(t.paid) + ' to ' + esc(nm(t.from)) + '</span></span></span></button>' +
     (t.qty > 1 ? '<div class="tdots" role="group" aria-label="Choose ticket">' + Array.from({ length:t.qty }, function(_, n){ return '<button class="' + (n === i ? 'on' : '') + '" data-act="tgo" data-n="' + n + '" aria-label="Ticket ' + (n + 1) + '" aria-pressed="' + (n === i) + '"></button>'; }).join('') + '</div>' : '') +
     '<button class="btn ' + (added ? 'btn-ghost' : 'btn-ink') + ' btn-full" data-act="walletadd"' + (added ? ' disabled' : '') + '>' + (added ? I.check + 'Added to Wallet' : I.plus + 'Add to Wallet') + '</button>' +
     '<button class="link" style="align-self:center" data-act="scan" data-id="' + t.id + '">Simulate scan-in at the gate</button></div>';
@@ -2573,14 +2573,14 @@ O.transfer = function(o){
     '<div class="row">' + av(o.to) + '<span class="grow"><span class="lt" style="font-size:1.2rem;font-weight:900">Sent to ' + first + '</span><span class="ls">' + esc(o.what) + ' · ' + esc(e.name) + (o.asked ? ' · asked for ' + money(o.asked) : '') + '</span></span></div>' +
     (o.left > 0 ? '<div class="undobar"><i id="undobar"></i></div><button class="btn btn-ghost btn-full" data-act="undosend"><span>Undo · <span id="undoleft">' + o.left + '</span>s</span></button>' : '<button class="btn btn-ghost btn-full" data-act="close">Done</button>') + '</div>';
   var all = seatsOf(t), list = pickedSeats(t, o), each = t.paid / t.qty, q = (o.q || '').toLowerCase();
-  var names = q ? Object.keys(PEOPLE).filter(function(n){ return n !== 'TZ' && n !== 'Cardinal Dance Co.' && n.toLowerCase().indexOf(q) !== -1; }).slice(0, 6) : FRIENDS;
+  var names = q ? Object.keys(PEOPLE).filter(function(n){ return n !== 'Teezy' && n !== 'Cardinal Dance Co.' && n.toLowerCase().indexOf(q) !== -1; }).slice(0, 6) : FRIENDS;
   if (o.to && names.indexOf(o.to) === -1) names = [o.to].concat(names);
   return '<button class="scrim" data-act="close" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Send ticket"><span class="grab"></span>' +
     '<div class="row"><span class="cothumb" style="' + thumb(e) + '">' + (e.poster ? '' : esc(e.short)) + '</span><span class="grow"><span class="lt">' + esc(e.name) + '</span><span class="ls">' + e.date + ' · ' + esc(t.sec + (t.row ? ', ' + t.row : '')) + '</span></span></div>' +
     (t.qty > 1 ? '<div class="chips qtychips" role="group" aria-label="Which tickets" style="margin:0;padding:0"><span class="ls" style="align-self:center;margin:0">Send</span>' + all.map(function(x, i){ return '<button class="chip' + (o.seats[i] ? ' on' : '') + '" data-act="tseat" data-i="' + i + '" aria-pressed="' + !!o.seats[i] + '">' + (/^\d+$/.test(x) ? 'Seat ' + esc(x) : 'Ticket ' + (i + 1)) + '</button>'; }).join('') + '</div>' : '') +
     '<label class="tsearch"><input id="tq" data-input="tq" placeholder="Search name or @username" autocomplete="off" value="' + esc(o.q || '') + '" aria-label="Search people"></label>' +
     '<div class="tfr" role="group" aria-label="Send to">' + names.map(function(f){ return '<button class="' + (o.to === f ? 'on' : '') + '" data-act="tsel" data-name="' + esc(f) + '" aria-pressed="' + (o.to === f) + '">' + av(f) + esc(nm(f.split(' ')[0])) + '</button>'; }).join('') + (q ? '' : '<button data-act="tlink"><span class="avatar linkav">' + I.send + '</span>Link</button>') + (names.length ? '' : '<p class="empty" style="margin:0">No one found</p>') + '</div>' +
-    (t.paid ? '<div class="between"><span><span class="lt">Ask to be paid back</span><span class="ls">' + (first || 'They') + ' pays you ' + money(each * list.length) + ' through TZ</span></span><button class="toggle' + (o.pay ? ' on' : '') + '" data-act="tpayback" role="switch" aria-checked="' + !!o.pay + '" aria-label="Ask to be paid back"></button></div>' : '') +
+    (t.paid ? '<div class="between"><span><span class="lt">Ask to be paid back</span><span class="ls">' + (first || 'They') + ' pays you ' + money(each * list.length) + ' through Teezy</span></span><button class="toggle' + (o.pay ? ' on' : '') + '" data-act="tpayback" role="switch" aria-checked="' + !!o.pay + '" aria-label="Ask to be paid back"></button></div>' : '') +
     (t.status === 'held' ? '<p class="ls" style="margin:0">' + money(each * list.length) + ' stays held and goes to ' + esc(t.from) + ' when ' + (first || 'your friend') + ' scans in.</p>' : '') +
     '<div class="swpay' + (o.to ? '' : ' off') + '" data-done="sendticket"><span class="fill"></span><span class="lbl2">' + (o.to ? 'Slide to send to ' + first : 'Pick who gets it') + '</span><button class="knob" aria-label="' + (o.to ? 'Send ' + esc(sendLabel(t, list)) + ' to ' + first + '. Slide right, or press Enter.' : 'Pick who gets it first') + '">' + I.chev + '</button></div></div>';
 };
@@ -2676,7 +2676,7 @@ O.addfriends = function(){
   var row = function(act, icon, t, sub, extra){ return '<button class="lrow" data-act="' + act + '"' + (extra || '') + '><span class="avatar" style="background:var(--surface-2);color:var(--ink)">' + icon + '</span><span><span class="lt">' + t + '</span><span class="ls">' + sub + '</span></span>' + I.chev + '</button>'; };
   return '<button class="scrim" data-act="close" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Add friends"><span class="grab"></span>' +
     '<div class="between"><h2 class="title" style="font-size:1.4rem">Add friends</h2><button class="iconbtn" data-act="close" aria-label="Close">' + I.x + '</button></div><div class="list">' +
-    row('toast', I.search, 'Find classmates from your contacts', 'TZ only shows people at USC', ' data-msg="TZ found 6 classmates in your contacts"') +
+    row('toast', I.search, 'Find classmates from your contacts', 'Teezy only shows people at USC', ' data-msg="Teezy found 6 classmates in your contacts"') +
     row('mycode', I.qr, 'Show my code', 'A friend scans it to add you') +
     row('invite', I.send, 'Copy invite link', 'You both get $5 when they join') + '</div></div>';
 };
@@ -2688,7 +2688,7 @@ O.sellflow = function(o){
     '<div class="sfsteps" aria-hidden="true">' + steps.map(function(_, i){ return '<span class="' + (i <= at ? 'on' : '') + '"></span>'; }).join('') + '</div>';
   if (o.step === 'pick'){
     var mine = sellable();
-    h += '<div class="stack" style="gap:8px">' + mine.map(function(t){ var e = EV[t.ev]; return '<button class="sfpick' + (o.tid === t.id ? ' on' : '') + '" data-act="sfpick" data-id="' + t.id + '" aria-pressed="' + (o.tid === t.id) + '"><span class="wth" style="' + thumb(e) + '"></span><span class="grow"><span class="lt">' + esc(e.name) + '</span><span class="ls">' + e.date.split(', ')[1] + ' · ' + esc(t.sec.replace('General admission', 'GA')) + ' · ' + plural(t.qty, 'ticket') + ' · bought on TZ</span></span></button>'; }).join('') +
+    h += '<div class="stack" style="gap:8px">' + mine.map(function(t){ var e = EV[t.ev]; return '<button class="sfpick' + (o.tid === t.id ? ' on' : '') + '" data-act="sfpick" data-id="' + t.id + '" aria-pressed="' + (o.tid === t.id) + '"><span class="wth" style="' + thumb(e) + '"></span><span class="grow"><span class="lt">' + esc(e.name) + '</span><span class="ls">' + e.date.split(', ')[1] + ' · ' + esc(t.sec.replace('General admission', 'GA')) + ' · ' + plural(t.qty, 'ticket') + ' · bought on Teezy</span></span></button>'; }).join('') +
       '<button class="sfpick' + (o.tid === 'new' ? ' on' : '') + '" data-act="sfpick" data-id="new" aria-pressed="' + (o.tid === 'new') + '"><span class="wth" style="display:grid;place-items:center;background:var(--surface-2);color:var(--ink)">' + I.plus + '</span><span class="grow"><span class="lt">A ticket from somewhere else</span><span class="ls">Ticketmaster, AXS or another app · fill in the details</span></span></button></div>' +
       '<button class="btn btn-primary btn-full" data-act="sfnext">Next</button>';
   } else if (o.step === 'details'){
@@ -2698,7 +2698,7 @@ O.sellflow = function(o){
       '<div class="between"><label class="lbl" style="margin:0">How many tickets</label><span class="qstep"><button class="iconbtn" data-act="sfqty" data-d="-1" aria-label="One fewer">−</button><b>' + d.q + '</b><button class="iconbtn" data-act="sfqty" data-d="1" aria-label="One more">+</button></span></div>' +
       '<div class="sfgrid"><label><span class="lbl">Section</span><input class="sfin" id="sfsec" data-input="sfsec" placeholder="26 or GA" value="' + esc(d.sec) + '"></label><label><span class="lbl">Row</span><input class="sfin" id="sfrow" data-input="sfrow" placeholder="44" value="' + esc(d.row) + '"></label><label><span class="lbl">Seats</span><input class="sfin" id="sfseats" data-input="sfseats" placeholder="7, 8" value="' + esc(d.seats) + '"></label></div>' +
       '<div class="stack" style="gap:6px"><label class="lbl">Where the ticket is</label><div class="seg sfsrc" role="group" aria-label="Where the ticket is">' + ['Ticketmaster', 'AXS', 'Other'].map(function(v){ return '<button class="' + (d.src === v ? 'on' : '') + '" data-act="sfsrc" data-v="' + v + '" aria-pressed="' + (d.src === v) + '">' + v + '</button>'; }).join('') + '</div>' +
-      '<p class="ls" style="margin:0">When it sells, you transfer it to the buyer in ' + (d.src === 'Other' ? 'that app' : d.src) + '. TZ holds their payment until they get it.</p></div>' +
+      '<p class="ls" style="margin:0">When it sells, you transfer it to the buyer in ' + (d.src === 'Other' ? 'that app' : d.src) + '. Teezy holds their payment until they get it.</p></div>' +
       '<button class="btn btn-primary btn-full" data-act="sfnext">Next</button>';
   } else if (o.step === 'price' || o.step === 'review'){
     var t = sellTicket(o), e = EV[t.ev], b = sliderBounds(e, [o.p]), seat = o.tid === 'new' ? (/^ga$/i.test(String(t.sec).trim()) ? 'GA' : 'Sec ' + t.sec) + (t.row ? ', Row ' + t.row : '') : (t.sec || '').replace('General admission', 'GA') + (t.row ? ', ' + t.row : '');
@@ -2707,7 +2707,7 @@ O.sellflow = function(o){
       var match = o.tid !== 'new' && S.requests.filter(function(r){ return !r.filled && r.ev === t.ev && r.qty <= t.qty && r.max >= suggest(t.ev); }).sort(function(a, c){ return c.max - a.max; })[0];
       h += (match ? '<div class="sfmatch">' + av(match.who, 'sm') + '<span class="grow"><span class="lt">' + esc(nm(match.who)) + ' will pay $' + match.max + '</span><span class="ls">More than the suggested $' + suggest(t.ev) + '</span></span><button class="btn btn-sm btn-primary" data-act="sffill" data-id="' + match.id + '">Sell</button></div>' : '') +
         '<div data-pscope data-qty="' + t.qty + '">' + priceSlider({ key:'sellp', value:o.p, min:b[0], max:b[1], fair:e.range, theirs:null, label:'' }) +
-        '<div class="between" style="margin-top:8px"><span class="lt">You get</span><span class="price" style="font-size:1.25rem" data-tpl="{g}">' + cents(o.p * t.qty * 0.95) + '</span></div><p class="ls" style="margin:2px 0 0">After the 5% TZ fee · paid after the event</p></div>' +
+        '<div class="between" style="margin-top:8px"><span class="lt">You get</span><span class="price" style="font-size:1.25rem" data-tpl="{g}">' + cents(o.p * t.qty * 0.95) + '</span></div><p class="ls" style="margin:2px 0 0">After the 5% Teezy fee · paid after the event</p></div>' +
         '<div class="between"><span><span class="lt">Accept offers</span><span class="ls">Buyers can send a lower price</span></span><button class="toggle' + (o.offers ? ' on' : '') + '" data-act="sfoffers" role="switch" aria-checked="' + o.offers + '" aria-label="Accept offers"></button></div>' +
         '<button class="btn btn-primary btn-full" data-act="sfnext">Review</button>';
     } else {
@@ -2749,7 +2749,7 @@ O.pricehist = function(o){
     '<div class="btn-grid"><button class="btn btn-ghost" data-act="unwatch" data-ev="' + o.ev + '">Stop watching</button><button class="btn btn-primary" data-act="event" data-ev="' + o.ev + '">See tickets</button></div></div>';
 };
 O.code = function(){
-  return '<button class="scrim" data-act="close" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Friend code" style="align-items:center;text-align:center"><span class="grab"></span><h2 class="title" style="font-size:1.4rem">Add me on TZ</h2>' +
+  return '<button class="scrim" data-act="close" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Friend code" style="align-items:center;text-align:center"><span class="grab"></span><h2 class="title" style="font-size:1.4rem">Add me on Teezy</h2>' +
     '<div class="fqr">' + friendQr() + '</div>' +
     '<span><span class="lt" style="font-size:1.05rem">' + esc(S.profile.name) + '</span><span class="ls">@' + esc(S.profile.user) + ' · USC verified</span></span>' +
     '<p class="sub">Point your phone camera at it to add me. Friends see my tickets for sale first.</p>' +
@@ -3150,7 +3150,7 @@ A.evlist = function(d){
   if (!t) return;
   var price = Math.min(9999, Math.max(1, p.sp != null ? p.sp : suggest(t.ev)));
   S.tickets = S.tickets.filter(function(x){ return x !== t; });
-  var x = { id:uid('s'), ev:t.ev, sec:t.sec, row:t.row, qty:t.qty, price:price, views:0, acceptOffers:true, offers:[], from:'TZ' };
+  var x = { id:uid('s'), ev:t.ev, sec:t.sec, row:t.row, qty:t.qty, price:price, views:0, acceptOffers:true, offers:[], from:'Teezy' };
   S.selling.unshift(x); S.walletFront = 's-' + x.id; p.sp = null;
   later(function(){
     x.views = 12; x.offers.push({ who:'Kai L.', amt:Math.max(5, x.price - 6) });
@@ -3188,7 +3188,7 @@ A.pay = function(){
   S.walletFront = 't-' + S.tickets[S.tickets.length - 1].id;
   S.offers = S.offers.filter(function(x){ return x.listing !== l.id; });
   addActivity({ type:'Purchases', ic:'BUY', t:plural(o.qty, 'ticket') + ' from ' + l.seller, s:e.name + ' · held until you scan in', amt:-total });
-  var t = threadFor(l.seller); t.msgs.push({ sys:'Paid ' + money(total) + ' · held by TZ until you scan in' }); t.msgs.push({ text:'Sending the transfer now.' }); t.when = 'now';
+  var t = threadFor(l.seller); t.msgs.push({ sys:'Paid ' + money(total) + ' · held by Teezy until you scan in' }); t.msgs.push({ text:'Sending the transfer now.' }); t.when = 'now';
   S.overlay = { k:'checkout', id:o.id, qty:o.qty, snap:l, done:true };
   render();
   var now = document.querySelector('#overlay .sheet');
@@ -3390,7 +3390,7 @@ A.askq = function(d){
   reply(t, q ? q[1] : 'Sure.');
 };
 A.addfriend = function(d){ toast('Friend request sent. Chat opens once ' + nm(d.name.split(' ')[0]) + ' accepts.'); };
-A.report = function(){ toast('Reported. TZ reviews every report within a day.'); };
+A.report = function(){ toast('Reported. Teezy reviews every report within a day.'); };
 A.chatwith = function(d){ var t = threadFor(d.name); go('chat', { id:t.id }); };
 function reply(t, text, ms){
   var c = cur(); c.typing = true; render();
@@ -3605,7 +3605,7 @@ A.sflist = function(){
   var o = S.overlay, t = sellTicket(o), fmt = function(v, word){ v = String(v || '').trim(); return /^\d/.test(v) ? word + ' ' + v : v; };
   var sec = o.tid === 'new' ? (/^ga$/i.test(o.d.sec.trim()) ? 'General admission' : fmt(o.d.sec, 'Section')) : t.sec, row = o.tid === 'new' ? fmt(o.d.row, 'Row') : t.row;
   if (o.tid !== 'new') S.tickets = S.tickets.filter(function(x){ return x !== t; });
-  var x = { id:uid('s'), ev:t.ev, sec:sec, row:row, qty:t.qty, price:o.p, views:0, acceptOffers:o.offers, offers:[], from:o.tid === 'new' ? o.d.src : 'TZ' };
+  var x = { id:uid('s'), ev:t.ev, sec:sec, row:row, qty:t.qty, price:o.p, views:0, acceptOffers:o.offers, offers:[], from:o.tid === 'new' ? o.d.src : 'Teezy' };
   S.selling.unshift(x); S.walletFront = 's-' + x.id;
   if (x.acceptOffers) later(function(){
     x.views = 12; x.offers.push({ who:'Kai L.', amt:Math.max(5, x.price - 6) });
@@ -3904,7 +3904,7 @@ document.addEventListener('submit', function(e){
   var t = thread(cur().id);
   t.msgs.push({ me:1, text:text }); t.when = 'now';
   input.value = '';
-  var canned = { 'Maya R.':'Sounds good! Let me know on the offer.', 'Theo':'Yes!! Get a ticket, Ana is selling one.', 'Ana':'Want it? I can send it tonight.', 'Cardinal Dance Co.':'Thanks! The treasurer will see this.', 'TZ':'Thanks. A teammate will reply here within a day.' };
+  var canned = { 'Maya R.':'Sounds good! Let me know on the offer.', 'Theo':'Yes!! Get a ticket, Ana is selling one.', 'Ana':'Want it? I can send it tonight.', 'Cardinal Dance Co.':'Thanks! The treasurer will see this.', 'Teezy':'Thanks. A teammate will reply here within a day.' };
   reply(t, canned[t.name] || 'Got it. Talk soon.');
 });
 document.addEventListener('keydown', function(e){

@@ -1,4 +1,4 @@
-// AI@USC hackathon: the TZ broker.
+// AI@USC hackathon: the Teezy broker.
 //   1. readPost: the AI turns a pasted group-chat post into an order and checks it for scams.
 //   2. brokerFor*: plain code matches private limits. The AI only writes the messages.
 //   3. checkTransferImage: the AI reads a transfer screenshot; a person still confirms.
@@ -130,8 +130,8 @@ export async function brokerFor({ listingId = null, desiredId = null }) {
     );
     if (!o) return null;
     const notes = [
-      await pushNote(client, closest.seller_id, 'TZ broker has an offer for you', sell.message, { offerId: o.id }),
-      await pushNote(client, closest.buyer_id, 'TZ broker has an offer for you', buy.message, { offerId: o.id }),
+      await pushNote(client, closest.seller_id, 'Teezy broker has an offer for you', sell.message, { offerId: o.id }),
+      await pushNote(client, closest.buyer_id, 'Teezy broker has an offer for you', buy.message, { offerId: o.id }),
     ];
     return { o, notes };
   });

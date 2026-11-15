@@ -26,5 +26,5 @@
     "@stripe/cli": "1.55.8",
     "embedded-postgres": "17.10.0-beta.17"
   },
-  "description": "TZ for Trojans: protected student ticket resale with an AI scam check, AI broker and AI-checked transfers (AI@USC hackathon build, based on Teezy)."
+  "description": "Teezy: protected student ticket resale with an AI scam check, AI broker and AI-checked transfers (AI@USC hackathon build, based on Teezy)."
 }
