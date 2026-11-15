@@ -24,7 +24,7 @@ window.installTeezyBackend = function (ui, opts) {
   }
   // A listing can't go live with these: on Teezy there's no chat with strangers, so payment and contact stay inside the app.
   var BLOCKING = ['off_platform_payment', 'payment_before_transfer', 'contact_info', 'suspicious_link', 'personal_info_request', 'payment_trick', 'impersonation'];
-  function blockers(r) { return r.messageKind !== 'received' && r.scamSignals.some(function (s) { return BLOCKING.indexOf(s.type) !== -1; }); }
+  function blockers(r) { return r.scamSignals.some(function (s) { return BLOCKING.indexOf(s.type) !== -1; }); }
   function signalList(r) {
     if (!r.scamSignals.length) return '<div class="tz-ok"><b>Checked by AI. Ready to go live.</b> No outside payment, no contact details, no price above face value. Your money and the ticket stay inside Teezy.</div>';
     return '<div class="tz-warn" role="alert"><b>' + (blockers(r) ? 'This can’t go live yet' : r.scamRisk === 'high' ? 'High scam risk' : 'Check this first') + '</b><ul>' +
@@ -41,7 +41,7 @@ window.installTeezyBackend = function (ui, opts) {
       return head + signalList(r) + note(r.clarifyingQuestion || 'Teezy couldn’t tell if you’re selling or looking for a ticket. Add “selling” or “looking for” and try again.') +
         button('Edit and try again', 'brokeredit', '', true);
     }
-    var received = r.messageKind === 'received';
+    var received = false; // no chat with strangers on Teezy: every post is the student's own listing or request
     if (received) head = '<div class="between"><span class="lt">A message someone sent you</span><span class="tz-src">' + (r.source === 'ai' ? 'Read by Claude' : 'Offline rules') + '</span></div>' + note(r.summary);
     if (blockers(r)) {
       return head + signalList(r) + '<div class="tz-warn"><b>Take these out and post again.</b> Buyers pay inside Teezy and the money is held until the ticket arrives, so nobody needs your number, your handle or another way to pay.</div>' +

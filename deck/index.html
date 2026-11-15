@@ -47,6 +47,7 @@
   /* phone frames */
   .phone{ flex:none; width:250px; height:540px; border-radius:34px; border:7px solid var(--ink); overflow:hidden; background:#fff; box-shadow:0 30px 60px -30px rgba(0,0,0,.45); position:relative; }
   .phone img{ width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+  .phone.listing img{ object-position:center 62%; }
   .phone.bottom img{ object-position:bottom; }
   .phone.sm{ width:206px; height:446px; border-radius:30px; border-width:6px; }
 
@@ -362,7 +363,7 @@
   <!-- 5 -->
   <section class="slide" data-in="scan" data-notes="Posting is one sentence. [click] A seller types it the way they would text a friend. [click] The AI fills in the game, the price and their private lowest price, and checks it. [click] If someone tries to sneak in a Venmo handle or a phone number, the listing cannot go live. There is no chat with strangers, so a scammer has no way to pull you off Teezy.">
     <div class="demo">
-      <div class="phone" data-morph="phone"><img src="shots/scam.jpg" alt="Teezy blocks a listing with a Venmo handle and a phone number"></div>
+      <div class="phone listing" data-morph="phone"><img src="shots/scam.jpg" alt="Teezy blocks a listing with a Venmo handle and a phone number"></div>
       <div class="copy">
         <p class="kicker">Demo 1 · AI listing check</p>
         <h2>Post in one sentence. AI checks it before it goes live.</h2>
